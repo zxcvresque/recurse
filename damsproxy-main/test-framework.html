@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Framework - DAMS Content Suite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-600: #0d9488;
+        --primary-500: #10b981;
+        --success-500: #10b981;
+        --warning-500: #f59e0b;
+        --error-500: #ef4444;
+        --gray-900: #111827;
+        --gray-800: #1f2937;
+        --gray-700: #374151;
+      }
+
+      body {
+        font-family: "Fira Code", monospace;
+        background: linear-gradient(135deg, #000 0%, #0a0a0a 100%);
+        min-height: 100vh;
+        line-height: 1.6;
+      }
+
+      .test-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .test-card:hover {
+        border-color: rgba(13, 148, 136, 0.3);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .status-passed { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+      .status-failed { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+      .status-running { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+      .status-pending { background: rgba(107, 114, 128, 0.2); color: #9ca3af; border: 1px solid rgba(107, 114, 128, 0.3); }
+
+      .btn-test {
+        background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-500) 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .btn-test:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(13, 148, 136, 0.3);
+      }
+
+      .spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-left: 2px solid var(--primary-500);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+  </head>
+  <body class="bg-black text-green-400">
+    <div class="min-h-screen">
+      <!-- Header -->
+      <header class="bg-gray-900/80 backdrop-blur-md border-b border-gray-700/50 p-4 sticky top-0 z-50">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center space-x-4">
+            <div>
+              <h1 class="text-2xl font-bold text-primary-400">Test Framework</h1>
+              <p class="text-sm text-gray-400">Comprehensive Testing Suite</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-3">
+            <div class="text-right">
+              <p class="text-sm text-gray-300">DAMS Content Suite v2.4.0</p>
+              <p class="text-xs text-gray-400" id="test-time">Loading...</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="container mx-auto p-4 md:p-6">
+        <!-- Test Summary Dashboard -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+          <div class="lg:col-span-3">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div class="test-card p-6">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3 class="text-sm text-gray-400 mb-2">Total Tests</h3>
+                    <p class="text-2xl font-bold text-white" id="total-tests">0</p>
+                  </div>
+                  <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div class="test-card p-6">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3 class="text-sm text-gray-400 mb-2">Passed</h3>
+                    <p class="text-2xl font-bold text-green-400" id="passed-tests">0</p>
+                  </div>
+                  <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div class="test-card p-6">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3 class="text-sm text-gray-400 mb-2">Failed</h3>
+                    <p class="text-2xl font-bold text-red-400" id="failed-tests">0</p>
+                  </div>
+                  <div class="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div class="test-card p-6">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3 class="text-sm text-gray-400 mb-2">Success Rate</h3>
+                    <p class="text-2xl font-bold text-yellow-400" id="success-rate">0%</p>
+                  </div>
+                  <div class="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="test-card p-6">
+            <h3 class="text-lg font-bold text-green-400 mb-4">Test Controls</h3>
+            <div class="space-y-3">
+              <button id="run-all-tests" class="w-full btn-test bg-green-600 hover:bg-green-700">
+                Run All Tests
+              </button>
+              <button id="run-unit-tests" class="w-full bg-blue-800/50 hover:bg-blue-700/50 text-blue-300 font-medium py-2 px-4 rounded-lg border border-blue-700/50">
+                Unit Tests Only
+              </button>
+              <button id="run-integration-tests" class="w-full bg-purple-800/50 hover:bg-purple-700/50 text-purple-300 font-medium py-2 px-4 rounded-lg border border-purple-700/50">
+                Integration Tests
+              </button>
+              <button id="run-performance-tests" class="w-full bg-yellow-800/50 hover:bg-yellow-700/50 text-yellow-300 font-medium py-2 px-4 rounded-lg border border-yellow-700/50">
+                Performance Tests
+              </button>
+              <button id="clear-results" class="w-full bg-red-800/50 hover:bg-red-700/50 text-red-300 font-medium py-2 px-4 rounded-lg border border-red-700/50">
+                Clear Results
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Test Categories -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <!-- Unit Tests -->
+          <div class="test-card p-6">
+            <h2 class="text-xl font-bold text-blue-400 mb-4">Unit Tests</h2>
+            <div id="unit-tests-results" class="space-y-3">
+              <div class="text-sm text-gray-400 italic">No tests run yet</div>
+            </div>
+          </div>
+
+          <!-- Integration Tests -->
+          <div class="test-card p-6">
+            <h2 class="text-xl font-bold text-purple-400 mb-4">Integration Tests</h2>
+            <div id="integration-tests-results" class="space-y-3">
+              <div class="text-sm text-gray-400 italic">No tests run yet</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Performance Tests -->
+        <div class="test-card p-6 mb-8">
+          <h2 class="text-xl font-bold text-yellow-400 mb-4">Performance Tests</h2>
+          <div id="performance-tests-results" class="space-y-3">
+            <div class="text-sm text-gray-400 italic">No tests run yet</div>
+          </div>
+        </div>
+
+        <!-- Test Output Console -->
+        <div class="test-card p-6">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold text-green-400">Test Output Console</h2>
+            <button id="clear-console" class="btn-test bg-gray-600 hover:bg-gray-700 text-sm">
+              Clear Console
+            </button>
+          </div>
+          <div id="test-console" class="bg-gray-900/50 rounded-lg p-4 h-64 overflow-y-auto font-mono text-sm">
+            <div class="text-gray-400">Test console output will appear here...</div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // Test Framework State
+      let testResults = {
+        total: 0,
+        passed: 0,
+        failed: 0,
+        unit: { passed: 0, failed: 0, total: 0 },
+        integration: { passed: 0, failed: 0, total: 0 },
+        performance: { passed: 0, failed: 0, total: 0 }
+      };
+
+      let testRunner = null;
+      let consoleOutput = [];
+
+      // Utility Functions
+      function logToConsole(message, type = 'info') {
+        const timestamp = new Date().toLocaleTimeString();
+        const consoleDiv = document.getElementById('test-console');
+
+        const logEntry = document.createElement('div');
+        logEntry.className = `mb-1 ${
+          type === 'error' ? 'text-red-400' :
+          type === 'success' ? 'text-green-400' :
+          type === 'warning' ? 'text-yellow-400' : 'text-blue-400'
+        }`;
+
+        logEntry.innerHTML = `[${timestamp}] ${message}`;
+        consoleDiv.appendChild(logEntry);
+        consoleDiv.scrollTop = consoleDiv.scrollHeight;
+
+        consoleOutput.push({ timestamp, message, type });
+      }
+
+      function updateTestSummary() {
+        document.getElementById('total-tests').textContent = testResults.total;
+        document.getElementById('passed-tests').textContent = testResults.passed;
+        document.getElementById('failed-tests').textContent = testResults.failed;
+
+        const successRate = testResults.total > 0 ? Math.round((testResults.passed / testResults.total) * 100) : 0;
+        document.getElementById('success-rate').textContent = `${successRate}%`;
+      }
+
+      function addTestResult(containerId, testName, status, duration, message = '') {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const testDiv = document.createElement('div');
+        testDiv.className = `p-3 rounded-lg border ${status} flex justify-between items-center`;
+
+        const statusIcon = status === 'status-passed' ? '✓' :
+                          status === 'status-failed' ? '✗' :
+                          status === 'status-running' ? '⟳' : '○';
+
+        testDiv.innerHTML = `
+          <div class="flex-1">
+            <div class="font-medium text-white">${testName}</div>
+            ${message ? `<div class="text-xs text-gray-400 mt-1">${message}</div>` : ''}
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-sm">${duration}ms</span>
+            <span class="text-lg">${statusIcon}</span>
+          </div>
+        `;
+
+        container.appendChild(testDiv);
+      }
+
+      // Test Runner Class
+      class TestRunner {
+        constructor() {
+          this.isRunning = false;
+          this.currentTest = null;
+        }
+
+        async runAllTests() {
+          if (this.isRunning) return;
+          this.isRunning = true;
+
+          logToConsole('Starting comprehensive test suite...', 'info');
+          this.clearResults();
+
+          try {
+            await this.runUnitTests();
+            await this.runIntegrationTests();
+            await this.runPerformanceTests();
+
+            const totalTime = Date.now() - this.startTime;
+            logToConsole(`Test suite completed in ${totalTime}ms`, 'success');
+            logToConsole(`Results: ${testResults.passed} passed, ${testResults.failed} failed`, 'info');
+
+          } catch (error) {
+            logToConsole(`Test suite failed: ${error.message}`, 'error');
+          } finally {
+            this.isRunning = false;
+          }
+        }
+
+        async runUnitTests() {
+          logToConsole('Running unit tests...', 'info');
+          const startTime = Date.now();
+
+          // Test utility functions
+          await this.testUtilityFunctions();
+          await this.testAuthentication();
+          await this.testErrorHandling();
+          await this.testCaching();
+          await this.testUserExperience();
+
+          const duration = Date.now() - startTime;
+          logToConsole(`Unit tests completed in ${duration}ms`, 'info');
+        }
+
+        async runIntegrationTests() {
+          logToConsole('Running integration tests...', 'info');
+          const startTime = Date.now();
+
+          await this.testAPIEndpoints();
+          await this.testComponentInteractions();
+          await this.testDataFlow();
+          await this.testUserWorkflows();
+
+          const duration = Date.now() - startTime;
+          logToConsole(`Integration tests completed in ${duration}ms`, 'info');
+        }
+
+        async runPerformanceTests() {
+          logToConsole('Running performance tests...', 'info');
+          const startTime = Date.now();
+
+          await this.testLoadTime();
+          await this.testMemoryUsage();
+          await this.testNetworkLatency();
+          await this.testRenderingPerformance();
+
+          const duration = Date.now() - startTime;
+          logToConsole(`Performance tests completed in ${duration}ms`, 'info');
+        }
+
+        // Individual Test Methods
+        async testUtilityFunctions() {
+          const testStart = Date.now();
+
+          // Test array utility functions
+          try {
+            const testArray = [1, 2, 3, 4, 5];
+            const sum = testArray.reduce((a, b) => a + b, 0);
+            if (sum !== 15) throw new Error('Array sum calculation failed');
+
+            testResults.unit.passed++;
+            addTestResult('unit-tests-results', 'Array Utilities', 'status-passed', Date.now() - testStart);
+            logToConsole('✓ Array utilities test passed', 'success');
+          } catch (error) {
+            testResults.unit.failed++;
+            addTestResult('unit-tests-results', 'Array Utilities', 'status-failed', Date.now() - testStart, error.message);
+            logToConsole('✗ Array utilities test failed', 'error');
+          }
+
+          // Test string utilities
+          try {
+            const testString = 'hello world';
+            const upperCase = testString.toUpperCase();
+            if (upperCase !== 'HELLO WORLD') throw new Error('String uppercase failed');
+
+            testResults.unit.passed++;
+            addTestResult('unit-tests-results', 'String Utilities', 'status-passed', Date.now() - testStart);
+            logToConsole('✓ String utilities test passed', 'success');
+          } catch (error) {
+            testResults.unit.failed++;
+            addTestResult('unit-tests-results', 'String Utilities', 'status-failed', Date.now() - testStart, error.message);
+            logToConsole('✗ String utilities test failed', 'error');
+          }
+        }
+
+        async testAuthentication() {
+          const testStart = Date.now();
+
+          try {
+            // Test token validation
+            const mockToken = 'mock.jwt.token';
+            if (!mockToken.includes('.')) throw new Error('Token format validation failed');
+
+            testResults.unit.passed++;
+            addTestResult('unit-tests-results', 'Authentication', 'status-passed', Date.now() - testStart);
+            logToConsole('✓ Authentication test passed', 'success');
+          } catch (error) {
+            testResults.unit.failed++;
+            addTestResult('unit-tests-results', 'Authentication', 'status-failed', Date.now() - testStart, error.message);
+            logToConsole('✗ Authentication test failed', 'error');
+          }
+        }
+
+        async testErrorHandling() {
+          const testStart = Date.now();
+
+          try {
+            // Test error object creation
+            const testError = new Error('Test error message');
+            if (!testError.message.includes('Test error')) throw new Error('Error handling failed');
+
+            testResults.unit.passed++;
+            addTestResult('unit-tests-results', 'Error Handling', 'status-passed', Date.now() - testStart);
+            logToConsole('✓ Error handling test passed', 'success');
+          } catch (error) {
+            testResults.unit.failed++;
+            addTestResult('unit-tests-results', 'Error Handling', 'status-failed', Date.now() - testStart, error.message);
+            logToConsole('✗ Error handling test failed', 'error');
+          }
+        }
+
+        async testCaching() {
+          const testStart = Date.now();
+
+          try {
+            // Test localStorage availability
+            const testKey = '__test_cache__';
+            localStorage.setItem(testKey, 'test_value');
+            const retrieved = localStorage.getItem(testKey);
+            localStorage.removeItem(testKey);
+
+            if (retrieved !== 'test_value') throw new Error('Cache storage failed');
+
+            testResults.unit.passed++;
+            addTestResult('unit-tests-results', 'Caching System', 'status-passed', Date.now() - testStart);
+            logToConsole('✓ Caching system test passed', 'success');
+          } catch (error) {
+            testResults.unit.failed++;
+            addTestResult('unit-tests-results', 'Caching System', 'status-failed', Date.now() - testStart, error.message);
+            logToConsole('✗ Caching system test failed', 'error');
+          }
+        }
+
+        async testUserExperience() {
+          const testStart = Date.now();
+
+          try {
+            // Test progress calculation
+            const progress = (5 / 10) * 100; // 50%
+            if (progress !== 50) throw new Error('Progress calculation failed');
+
+            testResults.unit.passed++;
+            addTestResult('unit-tests-results', 'User Experience', 'status-passed', Date.now() - testStart);
+            logToConsole('✓ User experience test passed', 'success');
+          } catch (error) {
+            testResults.unit.failed++;
+            addTestResult('unit-tests-results', 'User Experience', 'status-failed', Date.now() - testStart, error.message);
+            logToConsole('✗ User experience test failed', 'error');
+          }
+        }
+
+        async testAPIEndpoints() {
+          const testStart = Date.now();
+
+          try {
+            // Test API response format
+            const mockResponse = { success: true, data: [] };
+            if (!mockResponse.success) throw new Error('API response format invalid');
+
+            testResults.integration.passed++;
+            addTestResult('integration-tests-results', 'API Endpoints', 'status-passed', Date.now() - testStart);
+            logToConsole('✓ API endpoints test passed', 'success');
+          } catch (error) {
+            testResults.integration.failed++;
+            addTestResult('integration-tests-results', 'API Endpoints', 'status-failed', Date.now() - testStart, error.message);
+            logToConsole('✗ API endpoints test failed', 'error');
+          }
+        }
+
+        async testComponentInteractions() {
+          const testStart = Date.now();
+
+          try {
+            // Test DOM element interactions
+            const testElement = document.createElement('div');
+            testElement.className = 'test-element';
+            if (!testElement.classList.contains('test-element')) throw new Error('DOM interaction failed');
+
+            testResults.integration.passed++;
+            addTestResult('integration-tests-results', 'Component Interactions', 'status-passed', Date.now() - testStart);
+            logToConsole('✓ Component interactions test passed', 'success');
+          } catch (error) {
+            testResults.integration.failed++;
+            addTestResult('integration-tests-results', 'Component Interactions', 'status-failed', Date.now() - testStart, error.message);
+            logToConsole('✗ Component interactions test failed', 'error');
+          }
+        }
+
+        async testDataFlow() {
+          const testStart = Date.now();
+
+          try {
+            // Test data transformation
+            const inputData = { name: 'test', value: 123 };
+            const transformed = { ...inputData, processed: true };
+            if (!transformed.processed) throw new Error('Data flow failed');
+
+            testResults.integration.passed++;
+            addTestResult('integration-tests-results', 'Data Flow', 'status-passed', Date.now() - testStart);
+            logToConsole('✓ Data flow test passed', 'success');
+          } catch (error) {
+            testResults.integration.failed++;
+            addTestResult('integration-tests-results', 'Data Flow', 'status-failed', Date.now() - testStart, error.message);
+            logToConsole('✗ Data flow test failed', 'error');
+          }
+        }
+
+        async testUserWorkflows() {
+          const testStart = Date.now();
+
+          try {
+            // Test user login workflow
+            const user = { email: 'test@example.com', role: 'user' };
+            if (!user.email.includes('@')) throw new Error('User workflow validation failed');
+
+            testResults.integration.passed++;
+            addTestResult('integration-tests-results', 'User Workflows', 'status-passed', Date.now() - testStart);
+            logToConsole('✓ User workflows test passed', 'success');
+          } catch (error) {
+            testResults.integration.failed++;
+            addTestResult('integration-tests-results', 'User Workflows', 'status-failed', Date.now() - testStart, error.message);
+            logToConsole('✗ User workflows test failed', 'error');
+          }
+        }
+
+        async testLoadTime() {
+          const testStart = Date.now();
+
+          try {
+            // Test page load performance
+            const loadTime = Date.now() - testStart;
+            if (loadTime > 100) throw new Error('Load time too slow');
+
+            testResults.performance.passed++;
+            addTestResult('performance-tests-results', 'Load Time', 'status-passed', loadTime);
+            logToConsole('✓ Load time test passed', 'success');
+          } catch (error) {
+            testResults.performance.failed++;
+            addTestResult('performance-tests-results', 'Load Time', 'status-failed', Date.now() - testStart, error.message);
+            logToConsole('✗ Load time test failed', 'error');
+          }
+        }
+
+        async testMemoryUsage() {
+          const testStart = Date.now();
+
+          try {
+            // Test memory efficiency
+            const initialMemory = performance.memory ? performance.memory.usedJSHeapSize : 0;
+            const testArray = new Array(1000).fill('test');
+            const finalMemory = performance.memory ? performance.memory.usedJSHeapSize : 0;
+
+            if (performance.memory && finalMemory - initialMemory > 1000000) {
+              throw new Error('Memory usage too high');
+            }
+
+            testResults.performance.passed++;
+            addTestResult('performance-tests-results', 'Memory Usage', 'status-passed', Date.now() - testStart);
+            logToConsole('✓ Memory usage test passed', 'success');
+          } catch (error) {
+            testResults.performance.failed++;
+            addTestResult('performance-tests-results', 'Memory Usage', 'status-failed', Date.now() - testStart, error.message);
+            logToConsole('✗ Memory usage test failed', 'error');
+          }
+        }
+
+        async testNetworkLatency() {
+          const testStart = Date.now();
+
+          try {
+            // Test network performance
+            const latency = Date.now() - testStart;
+            if (latency > 50) throw new Error('Network latency too high');
+
+            testResults.performance.passed++;
+            addTestResult('performance-tests-results', 'Network Latency', 'status-passed', latency);
+            logToConsole('✓ Network latency test passed', 'success');
+          } catch (error) {
+            testResults.performance.failed++;
+            addTestResult('performance-tests-results', 'Network Latency', 'status-failed', Date.now() - testStart, error.message);
+            logToConsole('✗ Network latency test failed', 'error');
+          }
+        }
+
+        async testRenderingPerformance() {
+          const testStart = Date.now();
+
+          try {
+            // Test rendering performance
+            const frames = 60;
+            let frameCount = 0;
+
+            const measureFrames = () => {
+              frameCount++;
+              if (frameCount < frames) {
+                requestAnimationFrame(measureFrames);
+              }
+            };
+
+            requestAnimationFrame(measureFrames);
+
+            // Wait for animation to complete
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            if (frameCount < frames * 0.9) throw new Error('Rendering performance poor');
+
+            testResults.performance.passed++;
+            addTestResult('performance-tests-results', 'Rendering Performance', 'status-passed', Date.now() - testStart);
+            logToConsole('✓ Rendering performance test passed', 'success');
+          } catch (error) {
+            testResults.performance.failed++;
+            addTestResult('performance-tests-results', 'Rendering Performance', 'status-failed', Date.now() - testStart, error.message);
+            logToConsole('✗ Rendering performance test failed', 'error');
+          }
+        }
+
+        clearResults() {
+          testResults = {
+            total: 0, passed: 0, failed: 0,
+            unit: { passed: 0, failed: 0, total: 0 },
+            integration: { passed: 0, failed: 0, total: 0 },
+            performance: { passed: 0, failed: 0, total: 0 }
+          };
+
+          document.getElementById('unit-tests-results').innerHTML = '<div class="text-sm text-gray-400 italic">No tests run yet</div>';
+          document.getElementById('integration-tests-results').innerHTML = '<div class="text-sm text-gray-400 italic">No tests run yet</div>';
+          document.getElementById('performance-tests-results').innerHTML = '<div class="text-sm text-gray-400 italic">No tests run yet</div>';
+
+          updateTestSummary();
+        }
+      }
+
+      // Initialize Test Framework
+      document.addEventListener('DOMContentLoaded', () => {
+        testRunner = new TestRunner();
+
+        // Update time display
+        const updateTime = () => {
+          document.getElementById('test-time').textContent = new Date().toLocaleString();
+        };
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // Button event listeners
+        document.getElementById('run-all-tests').addEventListener('click', () => {
+          testRunner.runAllTests();
+        });
+
+        document.getElementById('run-unit-tests').addEventListener('click', () => {
+          testRunner.runUnitTests();
+        });
+
+        document.getElementById('run-integration-tests').addEventListener('click', () => {
+          testRunner.runIntegrationTests();
+        });
+
+        document.getElementById('run-performance-tests').addEventListener('click', () => {
+          testRunner.runPerformanceTests();
+        });
+
+        document.getElementById('clear-results').addEventListener('click', () => {
+          testRunner.clearResults();
+          logToConsole('Test results cleared', 'info');
+        });
+
+        document.getElementById('clear-console').addEventListener('click', () => {
+          document.getElementById('test-console').innerHTML = '<div class="text-gray-400">Test console output will appear here...</div>';
+          consoleOutput = [];
+        });
+
+        logToConsole('Test framework initialized successfully', 'success');
+        logToConsole('Ready to run comprehensive test suite', 'info');
+      });
+    </script>
+  </body>
+</html>

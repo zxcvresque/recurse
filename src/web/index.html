@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Re/curse - Website Archiver</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Doto:wght@400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="layout-minimal">
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg class="logo-icon" viewBox="0 0 100 100" fill="none">
+                    <!-- Right Face -->
+                    <path d="M50 50 L90 30 L90 70 L50 90 Z" style="fill: var(--accent-primary)" />
+                    <!-- Left Face -->
+                    <path d="M50 50 L10 30 L10 70 L50 90 Z" style="fill: var(--accent-secondary)" />
+                    <!-- Top Face -->
+                    <path d="M50 50 L10 30 L50 10 L90 30 Z" style="fill: var(--text-primary); opacity: 0.8" />
+                    <!-- Inner details -->
+                    <path d="M50 40 L60 35 M50 40 L40 35 M50 40 L50 52" stroke="rgba(255,255,255,0.5)"
+                        stroke-width="2" />
+                </svg>
+                <h1
+                    style="font-family: 'Doto', 'DR Krapka Rhombus', monospace; font-size: 32px; font-weight: 600; letter-spacing: 2px;">
+                    Re/curse</h1>
+            </div>
+            <!-- Version removed for cleaner look -->
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Start Form -->
+            <section id="start-form" class="panel">
+                <div class="form-group">
+                    <label for="start-url">
+                        Start URL
+                        <span class="tooltip"
+                            data-tip="Enter the website URL to archive. https:// will be added automatically.">🛈</span>
+                    </label>
+                    <input type="text" id="start-url" placeholder="example.com" required>
+                </div>
+
+                <!-- Mode Selection -->
+                <div class="mode-selection">
+                    <label class="mode-option">
+                        <input type="radio" name="mode" value="quick" checked>
+                        <span class="mode-card">
+                            <strong>⚡ Quick Archive</strong>
+                            <small>Download pages directly</small>
+                        </span>
+                    </label>
+                    <label class="mode-option">
+                        <input type="radio" name="mode" value="analyze">
+                        <span class="mode-card">
+                            <strong>🔍 Analyze First</strong>
+                            <small>Preview & select pages</small>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="form-row aligned">
+                    <div class="form-group">
+                        <label for="max-depth">Max Depth <span class="tooltip"
+                                data-tip="How many levels of links to follow.">🛈</span></label>
+                        <div class="number-input-group">
+                            <button type="button" class="num-btn" data-action="dec" data-target="max-depth">−</button>
+                            <input type="number" id="max-depth" min="1" max="50" value="3">
+                            <button type="button" class="num-btn" data-action="inc" data-target="max-depth">+</button>
+                        </div>
+                        <label class="checkbox-label small">
+                            <input type="checkbox" id="infinite-depth">
+                            Infinite
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="max-pages">Max Pages <span class="tooltip"
+                                data-tip="Maximum pages to discover/download.">🛈</span></label>
+                        <div class="number-input-group">
+                            <button type="button" class="num-btn" data-action="dec" data-target="max-pages">−</button>
+                            <input type="number" id="max-pages" min="1" max="100000" value="50">
+                            <button type="button" class="num-btn" data-action="inc" data-target="max-pages">+</button>
+                        </div>
+                        <label class="checkbox-label small">
+                            <input type="checkbox" id="infinite-pages">
+                            Infinite
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Advanced Options (collapsed) -->
+                <details class="options-section">
+                    <summary>Advanced Options</summary>
+                    <br>
+                    <div class="form-group">
+                        <label for="output-dir">Output Directory <span class="tooltip"
+                                data-tip="Where to save the archive.">🛈</span></label>
+                        <input type="text" id="output-dir" value="./archives" placeholder="./archives">
+                    </div>
+                    <div class="form-group">
+                        <label for="delay">Request Delay (ms)</label>
+                        <input type="number" id="delay" min="0" max="10000" value="500">
+                    </div>
+                    <div class="form-group">
+                        <label for="timeout">Page Timeout (ms)</label>
+                        <input type="number" id="timeout" min="5000" max="120000" value="30000">
+                    </div>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="smart-discovery" checked>
+                        <span class="checkbox-custom"></span>
+                        Smart Discovery <span class="tooltip"
+                            data-tip="Checks robots.txt and sitemap.xml to find hidden pages.">🛈</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="same-domain" checked>
+                        <span class="checkbox-custom"></span>
+                        Same Domain <span class="tooltip"
+                            data-tip="Stays on the exact subdomain (e.g. docs.site.com won't crawl site.com).">🛈</span>
+                    </label>
+                </details>
+
+                <button type="button" id="start-btn" class="btn-primary btn-full">
+                    <span id="start-btn-text">⚡ Start Archiving</span>
+                </button>
+            </section>
+
+            <!-- Analyzing Progress -->
+            <section id="analyzing-panel" class="panel hidden">
+                <div class="status-bar">
+                    <span class="status-badge status-running">Analyzing</span>
+                    <span id="analyze-url" class="crawl-url"></span>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="analyze-found">0</div>
+                        <div class="stat-label">Pages Found</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="analyze-queued">0</div>
+                        <div class="stat-label">In Queue</div>
+                    </div>
+                </div>
+                <div class="size-display">
+                    <span id="analyze-size">0 KB</span>
+                    <span class="tooltip yellow-icon"
+                        data-tip="Smart Estimate: Tracks page assets & checks download sizes. Actual size may vary.">🛈</span>
+                </div>
+                <div class="current-page-section">
+                    <div class="section-label">Currently Scanning:</div>
+                    <div class="current-url" id="analyze-current"></div>
+                </div>
+                <button type="button" id="stop-analyze-btn" class="btn-danger btn-full">Stop</button>
+            </section>
+
+            <!-- Analysis Results / Page Selector -->
+            <section id="selector-panel" class="panel hidden">
+                <div class="selector-header">
+                    <h2>📋 Select Pages to Archive</h2>
+                    <div class="selector-stats">
+                        <span id="total-found">0</span> pages found in <span id="analyze-duration">0s</span>
+                    </div>
+                </div>
+
+                <div class="selector-actions">
+                    <button type="button" id="select-all-btn" class="btn-small">Select All</button>
+                    <button type="button" id="deselect-all-btn" class="btn-small">Deselect All</button>
+                    <span class="selected-count"><span id="selected-count">0</span> selected</span>
+                </div>
+
+                <div id="page-tree" class="page-tree"></div>
+
+                <div class="selector-footer">
+                    <button type="button" id="download-selected-btn" class="btn-primary btn-full">
+                        Download Selected
+                    </button>
+                    <button type="button" id="back-btn" class="btn-secondary btn-full">← Back</button>
+                </div>
+            </section>
+
+            <!-- Progress Dashboard (same as before) -->
+            <section id="progress-dashboard" class="panel hidden">
+                <div class="status-bar">
+                    <span id="crawl-status" class="status-badge status-running">Running</span>
+                    <span id="crawl-url" class="crawl-url"></span>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="pages-downloaded">0</div>
+                        <div class="stat-label">Downloaded</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="pages-discovered">0</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                </div>
+                <div class="size-display">
+                    <strong id="total-size">0 B</strong> archived
+                </div>
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <span>Progress</span>
+                        <span id="progress-text">0 / 0 pages</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+                <div class="current-page-section">
+                    <div class="section-label">Currently Processing:</div>
+                    <div class="current-url" id="current-url-display">Waiting...</div>
+                </div>
+                <button type="button" id="stop-btn" class="btn-danger btn-full">Stop</button>
+            </section>
+
+            <!-- Completed Section -->
+            <section id="completed-section" class="panel hidden">
+                <div class="completed-header">
+                    <div class="success-icon">✓</div>
+                    <h2 class="success-title">Archive Complete!</h2>
+                    <p class="success-subtitle">Your website has been successfully archived</p>
+                </div>
+                <div class="stats-summary">
+                    <div class="summary-item">
+                        <div class="summary-icon">📄</div>
+                        <span class="summary-value" id="final-pages">0</span>
+                        <span class="summary-label">Pages</span>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-icon">🖼️</div>
+                        <span class="summary-value" id="final-assets">0</span>
+                        <span class="summary-label">Assets</span>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-icon">💾</div>
+                        <span class="summary-value" id="final-size">0 B</span>
+                        <span class="summary-label">Size</span>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-icon">⏱️</div>
+                        <span class="summary-value" id="final-duration">0s</span>
+                        <span class="summary-label">Time</span>
+                    </div>
+                </div>
+                <div class="output-path">
+                    <div class="path-label">📦 Saved to:</div>
+                    <div class="path-value" id="output-path"></div>
+                </div>
+                <button type="button" id="new-crawl" class="btn-primary btn-full">✨ Start New Archive</button>
+            </section>
+        </main>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

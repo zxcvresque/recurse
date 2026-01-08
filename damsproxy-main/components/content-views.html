@@ -1,0 +1,202 @@
+<!-- Main Content Area -->
+<main class="container mx-auto p-4 sm:p-6 lg:p-8 flex-1 relative">
+   <div id="restricted-content" class="view">
+     <!-- MOBILE FIX: Increased vertical padding for better spacing on mobile -->
+     <div class="text-center py-12 sm:py-20">
+       <div class="content-card max-w-2xl mx-auto p-6 sm:p-12">
+         <div class="mb-8">
+           <div class="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+             <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+             </svg>
+           </div>
+           <!-- MOBILE FIX: Adjusted text sizes for better mobile readability -->
+           <h1 class="text-2xl sm:text-4xl font-bold mb-4">
+             Access Restricted
+           </h1>
+           <p class="text-green-300 text-base sm:text-lg mb-6 opacity-80">
+             You must be logged in to access the DAMS Content Suite
+           </p>
+           <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-700/50 mb-8">
+             <p class="text-sm text-gray-300 mb-2">> System Status: <span class="text-red-400">LOCKED</span></p>
+             <p class="text-sm text-gray-300 mb-2">> Authentication: <span class="text-red-400">REQUIRED</span></p>
+             <p class="text-sm text-gray-300">> Access Level: <span class="text-red-400">DENIED</span></p>
+           </div>
+         </div>
+         <!-- MOBILE FIX: Added space-y-4 for stacking on mobile, sm:space-y-0 to remove it on larger screens -->
+         <div class="flex flex-col sm:flex-row gap-4 justify-center space-y-4 sm:space-y-0">
+           <button
+             id="restricted-login-btn"
+             class="btn-primary px-8 py-3 text-lg font-medium"
+           >
+             [LOGIN TO ACCESS]
+           </button>
+           <button
+             id="restricted-register-btn"
+             class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-8 rounded-lg transition-all duration-300"
+           >
+             [GET ACTIVATION CODE]
+           </button>
+         </div>
+       </div>
+     </div>
+   </div>
+
+   <div id="main-content" class="hidden">
+     <!-- Recent Updates Dashboard -->
+     <div id="recent-updates-section" class="mb-8">
+       <div class="content-card p-6">
+         <div class="flex items-center justify-between mb-6">
+           <div>
+             <h2 class="text-2xl font-bold text-green-400">Recent Updates</h2>
+             <p class="text-sm text-gray-400 mt-1">Latest announcements and system updates</p>
+           </div>
+           <div class="text-xs text-gray-500">
+             v2.4.0
+           </div>
+         </div>
+
+         <div id="updates-container" class="space-y-4">
+           <!-- Loading placeholder -->
+           <div class="text-center py-8">
+             <div class="animate-pulse text-gray-400">Loading updates...</div>
+           </div>
+         </div>
+       </div>
+     </div>
+
+     <div id="views-container">
+     <div id="resume-watching-card" class="mb-8 hidden"></div>
+     <div id="categories-view" class="view">
+       <header class="text-center mb-8 sm:mb-12">
+         <!-- TITLE FIX: Responsive text sizes -->
+         <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
+           > Select a Category
+         </h1>
+         <p class="text-green-300 text-sm sm:text-base opacity-80">
+           Choose your learning path from the available categories
+         </p>
+       </header>
+       <div
+         id="category-grid"
+         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
+       ></div>
+        <header class="text-center mt-16 mb-8 sm:mb-12">
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
+                > My Course Plans
+            </h1>
+            <p class="text-green-300 text-sm sm:text-base opacity-80">
+                Direct access to your subscribed course bundles
+            </p>
+        </header>
+        <div id="my-plans-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+            </div>
+        <header class="text-center mt-16 mb-8 sm:mb-12">
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
+                > Courses (Old View)
+            </h1>
+        </header>
+        <div id="old-courses-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+            </div>
+     </div>
+    <div id="courses-view" class="view hidden">
+      <header class="text-center mb-8 sm:mb-12">
+        <button
+          id="back-to-categories"
+          class="back-btn text-lg hover:text-green-200 mb-4"
+        >
+          << Back to Categories
+        </button>
+        <!-- TITLE FIX: Responsive text sizes and word break -->
+        <h1
+          id="category-title-header"
+          class="text-2xl sm:text-3xl lg:text-4xl font-bold break-words"
+        ></h1>
+      </header>
+      <div
+        id="course-grid"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      ></div>
+    </div>
+    <div id="subjects-view" class="view hidden">
+      <header class="text-center mb-8 sm:mb-12">
+        <button
+          id="back-to-courses"
+          class="back-btn text-lg hover:text-green-200 mb-4"
+        >
+          << Back to Courses
+        </button>
+        <!-- TITLE FIX: Responsive text sizes and word break -->
+        <h1
+          id="course-title-header"
+          class="text-2xl sm:text-3xl lg:text-4xl font-bold break-words"
+        ></h1>
+      </header>
+      <!-- SCALING FIX: Changed grid to be 2-col on sm screens -->
+      <div
+        id="subject-grid"
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6"
+      ></div>
+      <h2 class="text-2xl font-bold text-yellow-400 mt-12 mb-6">[Notes & Tests]</h2>
+      <div id="notes-test-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6"></div>
+    </div>
+    <div id="topics-view" class="view hidden">
+      <header class="text-center mb-8 sm:mb-12">
+        <button
+          id="back-to-subjects"
+          class="back-btn text-lg hover:text-green-200 mb-4"
+        >
+          << Back to Subjects
+        </button>
+        <!-- TITLE FIX: Responsive text sizes and word break -->
+        <h1
+          id="subject-title-header-for-topics"
+          class="text-2xl sm:text-3xl lg:text-4xl font-bold break-words"
+        ></h1>
+      </header>
+      <!-- SCALING FIX: Changed grid to be 2-col on sm screens -->
+      <div
+        id="topic-grid"
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6"
+      ></div>
+    </div>
+    <div id="videos-view" class="view hidden">
+      <header
+        class="text-center mb-8 sm:mb-12 flex flex-col sm:flex-row justify-between items-center gap-4"
+      >
+        <button
+          id="back-to-last-view"
+          class="back-btn text-lg hover:text-green-200"
+        >
+          << Back
+        </button>
+        <!-- TITLE FIX: Responsive text sizes and word break -->
+        <h1
+          id="video-list-header"
+          class="text-2xl sm:text-3xl lg:text-4xl font-bold break-words"
+        ></h1>
+        <button
+          id="download-all-btn"
+          class="text-lg bg-yellow-800/50 hover:bg-yellow-700/50 text-yellow-300 font-bold py-2 px-4 rounded-md"
+        >
+          [Download All]
+        </button>
+      </header>
+      <!-- SCALING FIX: Changed grid to be 2-col on lg screens -->
+      <div
+        id="video-grid"
+        class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6"
+      ></div>
+    </div>
+    <div id="plan-details-view" class="view hidden">
+        <header class="text-center mb-8 sm:mb-12">
+            <button id="back-to-categories-from-plan" class="text-lg hover:text-green-200 mb-4">
+                << Back to Main Page
+            </button>
+            <h1 id="plan-title-header" class="text-2xl sm:text-3xl lg:text-4xl font-bold break-words"></h1>
+        </header>
+        <div id="plan-child-courses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+    </div>
+  </div>
+</main>

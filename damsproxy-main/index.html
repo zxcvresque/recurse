@@ -1,0 +1,2955 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DAMS Course Viewer</title>
+
+    <!-- Basic Meta Tags -->
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+
+    <!-- DNS Prefetch for external resources -->
+    <link rel="dns-prefetch" href="//cdn.tailwindcss.com" />
+    <link rel="dns-prefetch" href="//cdn.plyr.io" />
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="//compute.anyme.workers.dev" />
+
+    <!-- Preconnect for critical resources -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://compute.anyme.workers.dev" crossorigin />
+
+
+
+    <!-- Theme color for mobile browsers -->
+    <meta name="theme-color" content="#0d9488" />
+    <meta name="msapplication-TileColor" content="#0d9488" />
+
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiByeD0iMzAiIGZpbGw9IiMwZDk0ODgiLz4KPHRleHQgeD0iOTAiIHk9IjExMiIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSI2MCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5EQW1TPC90ZXh0Pgo8L3N2Zz4K" />
+    <link rel="apple-touch-icon" sizes="152x152" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUyIiBoZWlnaHQ9IjE1MiIgdmlld0JveD0iMCAwIDE1MiAxNTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTIiIGhlaWdodD0iMTUyIiByeD0iMjQiIGZpbGw9IiMwZDk0ODgiLz4KPHRleHQgeD0iNzYiIHk9Ijk1IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXNpemU9IjUwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkRBTTM8L3RleHQ+Cjwvc3ZnPgo=" />
+    <link rel="apple-touch-icon" sizes="120x120" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiByeD0iMjAiIGZpbGw9IiMwZDk0ODgiLz4KPHRleHQgeD0iNjAiIHk9Ijc1IiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXNpemU9IjQwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkRBTTM8L3RleHQ+Cjwvc3ZnPgo=" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iIzBkOTQ4OCIvPgo8dGV4dCB4PSIxNiIgeT0iMjAiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+REFNUDwvdGV4dD4KPC9zdmc+Cg==" />
+    <link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iIzBkOTQ4OCIvPgo8dGV4dCB4PSIxNiIgeT0iMjAiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+REFNUDwvdGV4dD4KPC9zdmc+Cg==" />
+    <link rel="icon" type="image/png" sizes="16x16" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiByeD0iMiIgZmlsbD0iIzBkOTQ4OCIvPgo8dGV4dCB4PSI4IiB5PSIxMCIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSI1IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkRBTTM8L3RleHQ+Cjwvc3ZnPgo=" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="DAMS Course Viewer" />
+    <meta property="og:description" content="Professional medical education platform" />
+    <meta property="og:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHZpZXdCb3g9IjAgMCAxMjAwIDYzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMDAwIi8+CjxyZWN0IHg9IjEwIiB5PSIxMCIgd2lkdGg9IjExODAiIGhlaWdodD0iNjEwIiByeD0iMTAiIGZpbGw9IiMwZDk0ODgiLz4KPHRleHQgeD0iNjAwIiB5PSIzMzAiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iNjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+REFNUyBDb3Vyc2UgVmlld2VyPC90ZXh0Pgo8L3N2Zz4K" />
+    <meta property="og:url" content="https://dams-viewer.com" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="DAMS Course Viewer" />
+    <meta property="twitter:description" content="Professional medical education platform" />
+    <meta property="twitter:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHZpZXdCb3g9IjAgMCAxMjAwIDYzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjMwIiBmaWxsPSIjMDAwIi8+CjxyZWN0IHg9IjEwIiB5PSIxMCIgd2lkdGg9IjExODAiIGhlaWdodD0iNjEwIiByeD0iMTAiIGZpbGw9IiMwZDk0ODgiLz4KPHRleHQgeD0iNjAwIiB5PSIzMzAiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iNjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+REFNUyBDb3Vyc2UgVmlld2VyPC90ZXh0Pgo8L3N2Zz4K" />
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+        body {
+          font-family: "Fira Code", monospace;
+          background: linear-gradient(135deg, #000 0%, #0a0a0a 100%);
+          min-height: 100vh;
+          position: relative;
+          overflow-x: hidden;
+        }
+        .view {
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        .view:not(.hidden) {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        .hidden {
+          display: none;
+        }
+        ::-webkit-scrollbar {
+          width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+          background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: #0d9488;
+          border-radius: 4px;
+          transition: background 0.3s ease;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: #14b8a6;
+        }
+
+        /* Enhanced button styles */
+        .btn-primary {
+          background: linear-gradient(135deg, #0d9488 0%, #14b8a6 50%, #0d9488 100%);
+          background-size: 200% 200%;
+          border: none;
+          border-radius: 12px;
+          padding: 14px 28px;
+          color: white;
+          font-weight: 600;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          position: relative;
+          overflow: hidden;
+          box-shadow: 0 4px 15px rgba(13, 148, 136, 0.3);
+          cursor: pointer;
+          pointer-events: auto;
+          z-index: 10;
+        }
+
+        .btn-primary::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+          transition: left 0.6s ease;
+          pointer-events: none;
+          z-index: 1;
+        }
+
+        .btn-primary:hover::before {
+          left: 100%;
+        }
+
+        .btn-primary:hover {
+          transform: translateY(-3px) scale(1.05);
+          box-shadow: 0 15px 35px rgba(13, 148, 136, 0.4);
+          background-position: right center;
+        }
+
+        .btn-primary:active {
+          transform: translateY(-1px) scale(1.02);
+        }
+
+        /* Card styles */
+        .content-card {
+          background: rgba(255, 255, 255, 0.02);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 8px;
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+          pointer-events: auto;
+        }
+
+        .content-card:hover {
+          transform: translateY(-2px);
+          border-color: rgba(255, 255, 255, 0.2);
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Plyr player styles */
+        :root {
+           --plyr-color-main: #0d9488;
+           --plyr-video-background: #000;
+           --plyr-control-radius: 0;
+           --plyr-control-spacing: 15px;
+           --plyr-font-family: "Fira Code", monospace;
+        }
+        .plyr__control--overlaid {
+           background: rgba(13, 148, 136, 0.8);
+           border: 1px solid #0d9488;
+        }
+        .plyr__control--overlaid:hover {
+           background: rgba(20, 184, 166, 0.9);
+        }
+        .plyr__progress input {
+           box-shadow: 0 0 10px #0d9488;
+        }
+        .plyr--video .plyr__controls {
+         background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+         border: none;
+        }
+
+        /* Video modal */
+        .max-w-4xl {
+           max-width: 64rem;
+        }
+        .aspect-video {
+           aspect-ratio: 16 / 9;
+        }
+
+        /* Breadcrumbs */
+        #breadcrumbs {
+           flex: 1 1 0;
+           min-width: 0;
+           overflow: hidden;
+        }
+        #breadcrumbs span.truncate {
+           display: inline-block;
+           max-width: 150px;
+           white-space: nowrap;
+           overflow: hidden;
+           text-overflow: ellipsis;
+           vertical-align: middle;
+        }
+
+        /* Title wrapping */
+        #course-title-header {
+           word-wrap: break-word;
+           overflow-wrap: break-word;
+           hyphens: auto;
+           max-width: 100%;
+           box-sizing: border-box;
+        }
+
+        /* Container constraints */
+        main.container {
+           max-width: 100vw;
+           box-sizing: border-box;
+        }
+        #navbar {
+           max-width: 100vw;
+           box-sizing: border-box;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 640px) {
+           #breadcrumbs span.truncate {
+               max-width: 80px;
+           }
+        }
+        .back-btn { display: none; }
+
+        /* Mobile Touch Enhancements */
+        .touch-manipulation {
+          touch-action: manipulation;
+          -webkit-tap-highlight-color: rgba(13, 148, 136, 0.3);
+        }
+
+        /* Prevent text selection on touch */
+        .no-select {
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+
+        /* Mobile-specific button sizes */
+        @media (max-width: 768px) {
+          button {
+            min-height: 44px; /* iOS recommended minimum touch target */
+            min-width: 44px;
+          }
+
+          .btn-primary {
+            padding: 16px 32px;
+            font-size: 16px;
+          }
+
+          /* Larger text for mobile */
+          .content-card h1 {
+            font-size: 1.5rem;
+          }
+
+          .content-card h2 {
+            font-size: 1.25rem;
+          }
+
+          .content-card h3 {
+            font-size: 1.125rem;
+          }
+
+          /* Better spacing for mobile */
+          .content-card {
+            padding: 1rem;
+            margin-bottom: 1rem;
+          }
+
+          /* Mobile grid adjustments */
+          .grid {
+            gap: 1rem;
+          }
+
+          /* Mobile-friendly modal sizing */
+          .modal-content {
+            max-height: 80vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+          }
+        }
+
+        /* Safe area support for devices with notches */
+        @supports (padding: max(0px)) {
+          .safe-top {
+            padding-top: max(1rem, env(safe-area-inset-top));
+          }
+
+          .safe-bottom {
+            padding-bottom: max(1rem, env(safe-area-inset-bottom));
+          }
+
+          .safe-left {
+            padding-left: max(1rem, env(safe-area-inset-left));
+          }
+
+          .safe-right {
+            padding-right: max(1rem, env(safe-area-inset-right));
+          }
+        }
+
+        /* Smooth scrolling for mobile */
+        @media (max-width: 768px) {
+          html {
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+          }
+        }
+
+        /* Mobile-specific hover states */
+        @media (hover: none) and (pointer: coarse) {
+          .hover-only {
+            display: none;
+          }
+
+          /* Remove hover effects on touch devices */
+          .content-card:hover {
+            transform: none;
+            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+          }
+        }
+
+        /* Authentication State Management */
+        .user-logged-in #auth-buttons,
+        .user-logged-in #mobile-auth-section {
+          display: none !important;
+        }
+
+        .user-logged-in #profile-btn,
+        .user-logged-in #admin-dashboard-btn,
+        .user-logged-in #mobile-profile-section {
+          display: block !important;
+        }
+
+        .user-not-logged-in #auth-buttons,
+        .user-not-logged-in #mobile-auth-section {
+          display: flex !important;
+        }
+
+        .user-not-logged-in #profile-btn,
+        .user-not-logged-in #admin-dashboard-btn,
+        .user-not-logged-in #mobile-profile-section {
+          display: none !important;
+        }
+
+        /* Force visibility for specific elements */
+        #auth-buttons.hidden,
+        #mobile-auth-section.hidden {
+          display: none !important;
+        }
+
+        #profile-btn.hidden,
+        #admin-dashboard-btn.hidden,
+        #mobile-profile-section.hidden {
+          display: none !important;
+        }
+
+        /* Authentication UI debugging */
+        .auth-debug {
+          position: fixed;
+          bottom: 10px;
+          right: 10px;
+          background: rgba(0, 0, 0, 0.8);
+          color: white;
+          padding: 5px 10px;
+          font-size: 10px;
+          border-radius: 4px;
+          z-index: 1000;
+        }
+    </style>
+  </head>
+  <body class="bg-black text-green-400">
+    <div id="impersonation-banner" class="hidden"></div>
+    <div id="auth-debug" class="auth-debug hidden">
+      Auth State: <span id="auth-debug-state">Unknown</span><br>
+      <small>Debug: Run debugAuthState() in console</small>
+    </div>
+    <div id="main-app" class="flex min-h-screen">
+      <!-- Desktop Sidebar -->
+      <aside
+        id="sidebar"
+        class="w-64 bg-black border-r border-green-900/50 p-6 hidden md:flex flex-col"
+      >
+        <h2 class="text-2xl font-bold text-green-400">[DAMS_VIEWER]</h2>
+        <div class="flex items-center space-x-2">
+          <p class="text-xs text-green-600">v2.4.2</p>
+          <p class="text-xs text-blue-400" id="build-number">Build: Loading...</p>
+        </div>
+        <!-- SIDEBAR STYLE FIX: Replaced old status text with new colorful design -->
+        <div class="mt-8 space-y-4">
+            <div class="bg-green-900/10 p-3 rounded-lg border border-green-900/20">
+                <p class="text-green-500 text-xs mb-1">> System Status</p>
+                <span class="font-bold text-green-300 bg-green-800/30 px-2 py-1 rounded text-xs">ONLINE</span>
+            </div>
+            <div class="bg-blue-900/10 p-3 rounded-lg border border-blue-900/20">
+                <p class="text-blue-500 text-xs mb-1">> Connection</p>
+                <span class="font-bold text-blue-300 bg-blue-800/30 px-2 py-1 rounded text-xs">SECURE</span>
+            </div>
+            <div class="bg-purple-900/10 p-3 rounded-lg border border-purple-900/20">
+                <p class="text-purple-500 text-xs mb-1">> Proxy</p>
+                <span class="font-bold text-purple-300 bg-purple-800/30 px-2 py-1 rounded text-xs">ACTIVE</span>
+            </div>
+        </div>
+        <div class="mt-auto text-xs text-gray-600">
+          <p>// Secure session established.</p>
+          <p>// Ready for user input.</p>
+        </div>
+      </aside>
+
+      <div class="flex-1 flex flex-col bg-black">
+        <!-- Main Navbar -->
+        <nav
+          id="navbar"
+          class="bg-black/90 backdrop-blur-md border-b border-green-900/30 sticky top-0 z-20 p-4 shadow-lg"
+        >
+          <div class="flex items-center justify-between">
+            <!-- NAVBAR FIX: Added flex-1 and min-w-0 to allow breadcrumbs to shrink and truncate -->
+            <div
+              id="breadcrumbs"
+              class="flex-1 min-w-0 flex items-center space-x-1 sm:space-x-2 text-sm text-gray-400"
+            ></div>
+            <div class="flex items-center space-x-2 sm:space-x-4">
+              <!-- Mobile Menu Button -->
+              <button
+                id="mobile-menu-btn"
+                class="md:hidden text-green-400 hover:text-green-300 p-2 rounded-lg bg-green-900/20 hover:bg-green-900/30 transition-all duration-300"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+              </button>
+              <!-- Search Button -->
+              <button
+                id="search-btn"
+                class="text-green-400 hover:text-green-300 p-2 rounded-lg bg-green-900/20 hover:bg-green-900/30 transition-all duration-300"
+                title="Search content"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </button>
+              <!-- Desktop Auth Buttons -->
+              <div id="auth-buttons" class="hidden md:flex items-center space-x-2">
+                <button
+                  id="login-btn"
+                  class="text-green-400 hover:text-green-300 px-3 py-2 rounded-lg bg-green-900/20 hover:bg-green-900/30 transition-all duration-300 text-sm font-medium"
+                >
+                  [LOGIN]
+                </button>
+                <button
+                  id="register-btn"
+                  class="btn-primary px-4 py-2 text-sm font-medium"
+                >
+                  [REGISTER]
+                </button>
+              </div>
+              <!-- Profile & Admin Buttons -->
+              <button
+                id="profile-btn"
+                class="hidden text-green-400 hover:text-green-300 p-2 rounded-lg bg-green-900/20 hover:bg-green-900/30 transition-all duration-300"
+                title="User Profile"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+              </button>
+              <a
+                id="admin-dashboard-btn"
+                href="admin.html"
+                class="hidden text-red-400 hover:text-red-300 p-2 rounded-lg bg-red-900/20 hover:bg-red-900/30 transition-all duration-300"
+                title="Admin Dashboard"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </nav>
+
+        <!-- MOBILE FIX: Added a scrim/overlay for when the mobile menu is open -->
+        <div id="mobile-menu-scrim" class="hidden md:hidden fixed inset-0 bg-black/60 z-30"></div>
+
+        <!-- MOBILE FIX: Changed classes to make the sidebar a fixed overlay -->
+        <div
+          id="mobile-sidebar"
+          class="fixed top-0 right-0 h-full bg-black border-l border-green-900/30 z-40 md:hidden transform translate-x-full transition-transform duration-300 ease-in-out"
+        >
+            <div class="flex flex-col h-full w-72 bg-gradient-to-b from-black to-gray-900 shadow-2xl">
+              <div class="flex justify-between items-center p-4 border-b border-green-900/30 bg-black/50 backdrop-blur-sm">
+                <div>
+                  <h3 class="text-lg font-bold text-green-400">[DAMS_VIEWER]</h3>
+                  <div class="flex items-center space-x-2">
+                    <p class="text-xs text-green-600">v2.4.2</p>
+                    <p class="text-xs text-blue-400" id="mobile-build-number">Build: Loading...</p>
+                  </div>
+                </div>
+                <button
+                  id="close-mobile-sidebar"
+                  class="text-gray-400 hover:text-red-400 p-2 rounded-lg hover:bg-red-900/20 transition-all duration-200"
+                >
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </div>
+              <div class="flex-1 p-4 space-y-4 overflow-y-auto bg-gradient-to-b from-gray-900/50 to-black/50">
+                <button
+                  id="mobile-search-btn"
+                  class="w-full bg-green-900/20 hover:bg-green-900/30 text-green-300 font-medium py-3 px-4 rounded-lg border border-green-900/30 transition-all duration-300 flex items-center justify-center space-x-2"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+                  <span>Search Content</span>
+                </button>
+
+                <div class="bg-green-900/10 p-3 rounded-lg border border-green-900/20">
+                  <p class="text-green-500 text-xs mb-1">> System Status</p>
+                  <span class="font-bold text-green-300 bg-green-800/30 px-2 py-1 rounded text-xs">ONLINE</span>
+                </div>
+                <div class="bg-blue-900/10 p-3 rounded-lg border border-blue-900/20">
+                  <p class="text-blue-500 text-xs mb-1">> Connection</p>
+                  <span class="font-bold text-blue-300 bg-blue-800/30 px-2 py-1 rounded text-xs">SECURE</span>
+                </div>
+                <div class="bg-purple-900/10 p-3 rounded-lg border border-purple-900/20">
+                  <p class="text-purple-500 text-xs mb-1">> Proxy</p>
+                  <span class="font-bold text-purple-300 bg-purple-800/30 px-2 py-1 rounded text-xs">ACTIVE</span>
+                </div>
+                <div id="mobile-auth-section" class="space-y-2">
+                  <button
+                    id="mobile-login-btn"
+                    class="w-full bg-green-900/20 hover:bg-green-900/30 text-green-300 font-medium py-2 px-4 rounded-lg border border-green-900/30 transition-all duration-300"
+                  >
+                    [LOGIN]
+                  </button>
+                  <button
+                    id="mobile-register-btn"
+                    class="w-full btn-primary py-2 font-medium"
+                  >
+                    [REGISTER]
+                  </button>
+                </div>
+
+                <div id="mobile-profile-section" class="hidden space-y-2">
+                  <button
+                    id="mobile-profile-btn"
+                    class="w-full bg-purple-900/20 hover:bg-purple-900/30 text-purple-300 font-medium py-2 px-4 rounded-lg border border-purple-900/30 transition-all duration-300"
+                  >
+                    [PROFILE]
+                  </button>
+                  <!-- OVERLAP FIX: Added 'block' class to the admin dashboard link -->
+                  <a
+                    id="mobile-admin-dashboard-btn"
+                    href="admin.html"
+                    class="hidden block w-full bg-red-900/20 hover:bg-red-900/30 text-red-300 font-medium py-2 px-4 rounded-lg border border-red-900/30 transition-all duration-300 text-center"
+                  >
+                    [ADMIN DASHBOARD]
+                  </a>
+                  <button
+                    id="mobile-logout-btn"
+                    class="w-full bg-red-800/50 hover:bg-red-700/50 text-red-300 font-medium py-2 px-4 rounded-md"
+                  >
+                    [LOGOUT]
+                  </button>
+                </div>
+
+                <div class="bg-gray-900/50 p-3 rounded-lg border border-gray-700/50 mt-8">
+                  <p class="text-xs text-gray-400 mb-1">// Secure session established</p>
+                  <p class="text-xs text-gray-400">// Ready for user input</p>
+                  <div class="mt-2 flex items-center space-x-1">
+                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span class="text-xs text-green-400">Session Active</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <main class="container mx-auto p-4 sm:p-6 lg:p-8 flex-1 relative">
+           <div id="restricted-content" class="view">
+             <!-- MOBILE FIX: Increased vertical padding for better spacing on mobile -->
+             <div class="text-center py-12 sm:py-20">
+               <div class="content-card max-w-2xl mx-auto p-6 sm:p-12">
+                 <div class="mb-8">
+                   <div class="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                     <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                     </svg>
+                   </div>
+                   <!-- MOBILE FIX: Adjusted text sizes for better mobile readability -->
+                   <h1 class="text-2xl sm:text-4xl font-bold mb-4">
+                     Access Restricted
+                   </h1>
+                   <p class="text-green-300 text-base sm:text-lg mb-6 opacity-80">
+                     You must be logged in to access the DAMS Content Suite
+                   </p>
+                   <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-700/50 mb-8">
+                     <p class="text-sm text-gray-300 mb-2">> System Status: <span class="text-red-400">LOCKED</span></p>
+                     <p class="text-sm text-gray-300 mb-2">> Authentication: <span class="text-red-400">REQUIRED</span></p>
+                     <p class="text-sm text-gray-300">> Access Level: <span class="text-red-400">DENIED</span></p>
+                   </div>
+                 </div>
+                 <!-- MOBILE FIX: Added space-y-4 for stacking on mobile, sm:space-y-0 to remove it on larger screens -->
+                 <div class="flex flex-col sm:flex-row gap-4 justify-center space-y-4 sm:space-y-0">
+                   <button
+                     id="restricted-login-btn"
+                     class="btn-primary px-8 py-3 text-lg font-medium"
+                   >
+                     [LOGIN TO ACCESS]
+                   </button>
+                   <button
+                     id="restricted-register-btn"
+                     class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-8 rounded-lg transition-all duration-300"
+                   >
+                     [GET ACTIVATION CODE]
+                   </button>
+                 </div>
+               </div>
+             </div>
+           </div>
+
+           <div id="main-content" class="hidden">
+             <!-- Recent Updates Dashboard -->
+             <div id="recent-updates-section" class="mb-8">
+               <div class="content-card p-6">
+                 <div class="flex items-center justify-between mb-6">
+                   <div>
+                     <h2 class="text-2xl font-bold text-green-400">Recent Updates</h2>
+                     <p class="text-sm text-gray-400 mt-1">Latest announcements and system updates</p>
+                   </div>
+                   <div class="text-xs text-gray-500">
+                     v2.4.0
+                   </div>
+                 </div>
+
+                 <div id="updates-container" class="space-y-4">
+                   <!-- Loading placeholder -->
+                   <div class="text-center py-8">
+                     <div class="animate-pulse text-gray-400">Loading updates...</div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+
+             <div id="views-container">
+             <div id="resume-watching-card" class="mb-8 hidden"></div>
+             <div id="categories-view" class="view">
+               <header class="text-center mb-8 sm:mb-12">
+                 <!-- TITLE FIX: Responsive text sizes -->
+                 <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
+                   > Select a Category
+                 </h1>
+                 <p class="text-green-300 text-sm sm:text-base opacity-80">
+                   Choose your learning path from the available categories
+                 </p>
+               </header>
+               <div
+                 id="category-grid"
+                 class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
+               ></div>
+                <header class="text-center mt-16 mb-8 sm:mb-12">
+                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
+                        > My Course Plans
+                    </h1>
+                    <p class="text-green-300 text-sm sm:text-base opacity-80">
+                        Direct access to your subscribed course bundles
+                    </p>
+                </header>
+                <div id="my-plans-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                    </div>
+                <header class="text-center mt-16 mb-8 sm:mb-12">
+                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
+                        > Courses (Old View)
+                    </h1>
+                </header>
+                <div id="old-courses-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                    </div>
+             </div>
+            <div id="courses-view" class="view hidden">
+              <header class="text-center mb-8 sm:mb-12">
+                <button
+                  id="back-to-categories"
+                  class="back-btn text-lg hover:text-green-200 mb-4"
+                >
+                  &lt;&lt; Back to Categories
+                </button>
+                <!-- TITLE FIX: Responsive text sizes and word break -->
+                <h1
+                  id="category-title-header"
+                  class="text-2xl sm:text-3xl lg:text-4xl font-bold break-words"
+                ></h1>
+              </header>
+              <div
+                id="course-grid"
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              ></div>
+            </div>
+            <div id="subjects-view" class="view hidden">
+              <header class="text-center mb-8 sm:mb-12">
+                <button
+                  id="back-to-courses"
+                  class="back-btn text-lg hover:text-green-200 mb-4"
+                >
+                  &lt;&lt; Back to Courses
+                </button>
+                <!-- TITLE FIX: Responsive text sizes and word break -->
+                <h1
+                  id="course-title-header"
+                  class="text-2xl sm:text-3xl lg:text-4xl font-bold break-words"
+                ></h1>
+              </header>
+              <!-- SCALING FIX: Changed grid to be 2-col on sm screens -->
+              <div
+                id="subject-grid"
+                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6"
+              ></div>
+              <h2 class="text-2xl font-bold text-yellow-400 mt-12 mb-6">[Notes & Tests]</h2>
+              <div id="notes-test-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6"></div>
+            </div>
+            <div id="topics-view" class="view hidden">
+              <header class="text-center mb-8 sm:mb-12">
+                <button
+                  id="back-to-subjects"
+                  class="back-btn text-lg hover:text-green-200 mb-4"
+                >
+                  &lt;&lt; Back to Subjects
+                </button>
+                <!-- TITLE FIX: Responsive text sizes and word break -->
+                <h1
+                  id="subject-title-header-for-topics"
+                  class="text-2xl sm:text-3xl lg:text-4xl font-bold break-words"
+                ></h1>
+              </header>
+              <!-- SCALING FIX: Changed grid to be 2-col on sm screens -->
+              <div
+                id="topic-grid"
+                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6"
+              ></div>
+            </div>
+            <div id="videos-view" class="view hidden">
+              <header
+                class="text-center mb-8 sm:mb-12 flex flex-col sm:flex-row justify-between items-center gap-4"
+              >
+                <button
+                  id="back-to-last-view"
+                  class="back-btn text-lg hover:text-green-200"
+                >
+                  &lt;&lt; Back
+                </button>
+                <!-- TITLE FIX: Responsive text sizes and word break -->
+                <h1
+                  id="video-list-header"
+                  class="text-2xl sm:text-3xl lg:text-4xl font-bold break-words"
+                ></h1>
+                <button
+                  id="download-all-btn"
+                  class="text-lg bg-yellow-800/50 hover:bg-yellow-700/50 text-yellow-300 font-bold py-2 px-4 rounded-md"
+                >
+                  [Download All]
+                </button>
+              </header>
+              <!-- SCALING FIX: Changed grid to be 2-col on lg screens -->
+              <div
+                id="video-grid"
+                class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6"
+              ></div>
+            </div>
+            <div id="plan-details-view" class="view hidden">
+                <header class="text-center mb-8 sm:mb-12">
+                    <button id="back-to-categories-from-plan" class="text-lg hover:text-green-200 mb-4">
+                        &lt;&lt; Back to Main Page
+                    </button>
+                    <h1 id="plan-title-header" class="text-2xl sm:text-3xl lg:text-4xl font-bold break-words"></h1>
+                </header>
+                <div id="plan-child-courses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    </div>
+            </div>
+          </div>
+        </main>
+      </div>
+
+      <!-- Component containers -->
+      <div id="navigation-container" class="hidden"></div>
+      <div id="content-views-container" class="hidden"></div>
+    </div>
+    <div
+      id="download-modal"
+      class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+    >
+      <!-- MOBILE FIX: Added max-h-[80vh] to prevent modal from going off-screen -->
+      <div
+        class="bg-black border border-green-700/50 rounded-lg shadow-lg shadow-green-500/10 w-full max-w-4xl max-h-[80vh] flex flex-col"
+      >
+        <header
+          class="p-4 border-b border-green-900/50 flex justify-between items-center"
+        >
+          <h2 class="text-xl font-bold text-green-400">
+            [Generate Batch Download Script]
+          </h2>
+          <button
+            id="close-modal-btn"
+            class="text-gray-500 hover:text-red-400 text-2xl"
+          >
+            &times;
+          </button>
+        </header>
+        <!-- MOBILE FIX: Added overflow-y-auto to make content scrollable if it exceeds height -->
+        <div class="p-6 space-y-6 overflow-y-auto">
+          <div>
+            <label
+              for="idm-links"
+              class="block text-sm font-bold text-green-500 mb-2"
+              >> IDM / Plain Text Links</label
+            >
+            <div class="relative">
+              <textarea
+                id="idm-links"
+                rows="8"
+                class="w-full bg-gray-900/50 border border-green-800/50 rounded-md p-2 text-xs text-green-300 focus:outline-none focus:ring-1 focus:ring-green-500"
+              ></textarea
+              ><button
+                onclick="copyToClipboard('idm-links')"
+                class="absolute top-2 right-2 bg-green-800/50 hover:bg-green-700/50 text-green-300 text-xs font-bold py-1 px-2 rounded-md"
+              >
+                [Copy]
+              </button>
+            </div>
+          </div>
+          <div>
+            <label
+              for="aria2c-script"
+              class="block text-sm font-bold text-green-500 mb-2"
+              >> Aria2c Script</label
+            >
+            <div class="relative">
+              <textarea
+                id="aria2c-script"
+                rows="8"
+                class="w-full bg-gray-900/50 border border-green-800/50 rounded-md p-2 text-xs text-green-300 focus:outline-none focus:ring-1 focus:ring-green-500"
+              ></textarea
+              ><button
+                onclick="copyToClipboard('aria2c-script')"
+                class="absolute top-2 right-2 bg-green-800/50 hover:bg-green-700/50 text-green-300 text-xs font-bold py-1 px-2 rounded-md"
+              >
+                [Copy]
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modals (Login, Register, Profile, etc.) remain unchanged as they are already well-structured for mobile -->
+    <!-- ... (rest of your modals) ... -->
+
+    <div
+      id="error-modal"
+      class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 fade-in"
+    >
+      <div
+        class="bg-black border border-red-700/50 rounded-lg shadow-lg shadow-red-500/10 w-full max-w-lg"
+      >
+        <header
+          class="p-4 border-b border-red-900/50 flex justify-between items-center"
+        >
+          <h2 class="text-xl font-bold text-red-400">[CONNECTION_FAILURE]</h2>
+          <button
+            id="close-error-modal-btn"
+            class="text-gray-500 hover:text-red-400 text-2xl"
+          >
+            &times;
+          </button>
+        </header>
+        <div class="p-6 space-y-4">
+          <p class="text-red-300">
+            A critical error occurred while attempting to communicate with the
+            backend proxy.
+          </p>
+          <div class="text-sm text-gray-400">
+            <p class="font-bold text-yellow-400">> Possible Causes:</p>
+            <ul class="list-disc list-inside mt-2">
+              <li>The backend worker is offline or has crashed.</li>
+              <li>A network configuration is blocking the request.</li>
+              <li>The API endpoint has changed or is unavailable.</li>
+            </ul>
+          </div>
+          <p class="text-gray-500 text-xs">
+            // Check the browser console for more details and try again later.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      id="search-modal"
+      class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+    >
+      <div class="bg-black border border-green-700/50 rounded-lg shadow-lg shadow-green-500/10 w-full max-w-2xl">
+        <header class="p-4 border-b border-green-900/50 flex justify-between items-center">
+          <h2 class="text-xl font-bold text-green-400">[SEARCH_CONTENT]</h2>
+          <button
+            id="close-search-modal"
+            class="text-gray-500 hover:text-red-400 text-2xl"
+          >
+            &times;
+          </button>
+        </header>
+        <div class="p-6 space-y-4">
+          <div class="relative">
+            <input
+              type="text"
+              id="search-input"
+              placeholder="Search courses, subjects, topics..."
+              class="w-full bg-gray-900/50 border border-green-800/50 rounded-md p-3 text-green-300 focus:outline-none focus:ring-1 focus:ring-green-500 pl-10"
+            >
+            <svg class="absolute left-3 top-3.5 w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+          <div id="search-results" class="space-y-2 max-h-96 overflow-y-auto">
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="login-modal"
+      class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+    >
+      <div class="bg-black border border-green-700/50 rounded-lg shadow-lg shadow-green-500/10 w-full max-w-md">
+        <header class="p-4 border-b border-green-900/50 flex justify-between items-center">
+          <h2 class="text-xl font-bold text-green-400">[USER_LOGIN]</h2>
+          <button
+            id="close-login-modal"
+            class="text-gray-500 hover:text-red-400 text-2xl"
+          >
+            &times;
+          </button>
+        </header>
+        <div class="p-6 space-y-4">
+          <form id="login-form" class="space-y-4">
+            <div>
+              <label for="login-email" class="block text-sm font-bold text-green-500 mb-2">
+                > Email Address
+              </label>
+              <input
+                type="email"
+                id="login-email"
+                required
+                class="w-full bg-gray-900/50 border border-green-800/50 rounded-md p-3 text-green-300 focus:outline-none focus:ring-1 focus:ring-green-500"
+                placeholder="user@example.com"
+              >
+            </div>
+            <div>
+              <label for="login-password" class="block text-sm font-bold text-green-500 mb-2">
+                > Password
+              </label>
+              <input
+                type="password"
+                id="login-password"
+                required
+                class="w-full bg-gray-900/50 border border-green-800/50 rounded-md p-3 text-green-300 focus:outline-none focus:ring-1 focus:ring-green-500"
+                placeholder="Enter your password"
+              >
+            </div>
+            <button
+              type="submit"
+              class="w-full btn-primary py-3 font-bold"
+            >
+              [LOGIN]
+            </button>
+          </form>
+          <div class="text-center">
+            <p class="text-gray-400 text-sm">
+              Don't have an account?
+              <button
+                id="show-register-btn"
+                class="text-green-400 hover:text-green-300 font-medium"
+              >
+                Register here
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="register-modal"
+      class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+    >
+      <div class="bg-black border border-green-700/50 rounded-lg shadow-lg shadow-green-500/10 w-full max-w-md">
+        <header class="p-4 border-b border-green-900/50 flex justify-between items-center">
+          <h2 class="text-xl font-bold text-green-400">[USER_REGISTRATION]</h2>
+          <button
+            id="close-register-modal"
+            class="text-gray-500 hover:text-red-400 text-2xl"
+          >
+            &times;
+          </button>
+        </header>
+        <div class="p-6 space-y-4">
+          <form id="register-form" class="space-y-4">
+            <div>
+              <label for="register-name" class="block text-sm font-bold text-green-500 mb-2">
+                > Full Name
+              </label>
+              <input
+                type="text"
+                id="register-name"
+                required
+                class="w-full bg-gray-900/50 border border-green-800/50 rounded-md p-3 text-green-300 focus:outline-none focus:ring-1 focus:ring-green-500"
+                placeholder="John Doe"
+              >
+            </div>
+            <div>
+              <label for="register-email" class="block text-sm font-bold text-green-500 mb-2">
+                > Email Address
+              </label>
+              <input
+                type="email"
+                id="register-email"
+                required
+                class="w-full bg-gray-900/50 border border-green-800/50 rounded-md p-3 text-green-300 focus:outline-none focus:ring-1 focus:ring-green-500"
+                placeholder="user@example.com"
+              >
+            </div>
+            <div>
+              <label for="register-password" class="block text-sm font-bold text-green-500 mb-2">
+                > Password
+              </label>
+              <input
+                type="password"
+                id="register-password"
+                required
+                class="w-full bg-gray-900/50 border border-green-800/50 rounded-md p-3 text-green-300 focus:outline-none focus:ring-1 focus:ring-green-500"
+                placeholder="Create a password"
+              >
+            </div>
+            <div>
+              <label for="activation-code" class="block text-sm font-bold text-green-500 mb-2">
+                > Activation Code
+              </label>
+              <input
+                type="text"
+                id="activation-code"
+                required
+                class="w-full bg-gray-900/50 border border-green-800/50 rounded-md p-3 text-green-300 focus:outline-none focus:ring-1 focus:ring-green-500"
+                placeholder="Enter activation code"
+              >
+            </div>
+            <button
+              type="submit"
+              class="w-full btn-primary py-3 font-bold"
+            >
+              [REGISTER]
+            </button>
+          </form>
+          <div class="text-center">
+            <p class="text-gray-400 text-sm">
+              Already have an account?
+              <button
+                id="show-login-btn"
+                class="text-green-400 hover:text-green-300 font-medium"
+              >
+                Login here
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="profile-modal"
+      class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+    >
+      <div class="bg-black border border-green-700/50 rounded-lg shadow-lg shadow-green-500/10 w-full max-w-md">
+        <header class="p-4 border-b border-green-900/50 flex justify-between items-center">
+          <h2 class="text-xl font-bold text-green-400">[USER_PROFILE]</h2>
+          <button
+            id="close-profile-modal"
+            class="text-gray-500 hover:text-red-400 text-2xl"
+          >
+            &times;
+          </button>
+        </header>
+        <div class="p-6 space-y-4">
+          <div id="profile-info" class="space-y-4">
+            </div>
+          <div class="space-y-2">
+            <button
+              id="logout-btn"
+              class="w-full bg-red-800/50 hover:bg-red-700/50 text-red-300 font-bold py-3 px-4 rounded-md"
+            >
+              [LOGOUT]
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="admin-modal"
+      class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+    >
+      <div class="bg-black border border-green-700/50 rounded-lg shadow-lg shadow-green-500/10 w-full max-w-6xl max-h-[90vh] flex flex-col">
+        <header class="p-4 border-b border-green-900/50 flex justify-between items-center">
+          <h2 class="text-xl font-bold text-green-400">[ADMIN_DASHBOARD]</h2>
+          <button
+            id="close-admin-modal"
+            class="text-gray-500 hover:text-red-400 text-2xl"
+          >
+            &times;
+          </button>
+        </header>
+        <div class="p-6 flex-1 overflow-y-auto">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-gray-900/30 p-4 rounded-lg border border-gray-700/50">
+              <h3 class="text-lg font-bold text-green-400 mb-2">Total Users</h3>
+              <p class="text-3xl font-bold text-white" id="total-users">0</p>
+            </div>
+            <div class="bg-gray-900/30 p-4 rounded-lg border border-gray-700/50">
+              <h3 class="text-lg font-bold text-blue-400 mb-2">Active Users</h3>
+              <p class="text-3xl font-bold text-white" id="active-users">0</p>
+            </div>
+            <div class="bg-gray-900/30 p-4 rounded-lg border border-gray-700/50">
+              <h3 class="text-lg font-bold text-purple-400 mb-2">Pending Codes</h3>
+              <p class="text-3xl font-bold text-white" id="pending-codes">0</p>
+            </div>
+          </div>
+
+          <div class="mb-8">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-xl font-bold text-green-400">User Management</h3>
+              <button
+                id="generate-code-btn"
+                class="btn-primary px-4 py-2 font-medium"
+              >
+                [Generate Activation Code]
+              </button>
+            </div>
+            <div class="bg-gray-900/30 rounded-lg border border-gray-700/50 overflow-hidden">
+              <div class="p-4 border-b border-gray-700/50">
+                <input
+                  type="text"
+                  id="user-search"
+                  placeholder="Search users..."
+                  class="w-full bg-gray-800/50 border border-gray-600/50 rounded-md p-3 text-green-300 focus:outline-none focus:ring-1 focus:ring-green-500"
+                >
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full">
+                  <thead class="bg-gray-800/50">
+                    <tr>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">User</th>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Email</th>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Joined</th>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="users-table-body" class="divide-y divide-gray-700/50">
+                    </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-8">
+            <h3 class="text-xl font-bold text-green-400 mb-4">Activation Codes</h3>
+            <div class="bg-gray-900/30 rounded-lg border border-gray-700/50 overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full">
+                  <thead class="bg-gray-800/50">
+                    <tr>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Code</th>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Expires</th>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Used By</th>
+                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="codes-table-body" class="divide-y divide-gray-700/50">
+                    </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="generate-code-modal"
+      class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+    >
+      <div class="bg-black border border-green-700/50 rounded-lg shadow-lg shadow-green-500/10 w-full max-w-md">
+        <header class="p-4 border-b border-green-900/50">
+          <h2 class="text-xl font-bold text-green-400">[Generate Activation Code]</h2>
+        </header>
+        <div class="p-6 space-y-4">
+          <form id="generate-code-form" class="space-y-4">
+            <div>
+              <label for="code-expiry" class="block text-sm font-bold text-green-500 mb-2">
+                > Expiry Days (1-30)
+              </label>
+              <input
+                type="number"
+                id="code-expiry"
+                min="1"
+                max="30"
+                value="7"
+                required
+                class="w-full bg-gray-900/50 border border-green-800/50 rounded-md p-3 text-green-300 focus:outline-none focus:ring-1 focus:ring-green-500"
+              >
+            </div>
+            <div>
+              <label for="code-quantity" class="block text-sm font-bold text-green-500 mb-2">
+                > Quantity
+              </label>
+              <input
+                type="number"
+                id="code-quantity"
+                min="1"
+                max="100"
+                value="1"
+                required
+                class="w-full bg-gray-900/50 border border-green-800/50 rounded-md p-3 text-green-300 focus:outline-none focus:ring-1 focus:ring-green-500"
+              >
+            </div>
+            <button
+              type="submit"
+              class="w-full btn-primary py-3 font-bold"
+            >
+              [Generate Codes]
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLAYER UI FIX: Moved player styles from head to here for better organization -->
+
+    <div id="video-player-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50">
+        <div class="bg-black border border-green-700/50 rounded-lg shadow-lg shadow-green-500/10 w-full max-w-4xl max-h-[90vh] flex flex-col">
+            <header class="p-4 border-b border-green-900/50 flex justify-between items-center">
+                <h2 id="video-modal-title" class="text-lg sm:text-xl font-bold text-green-400 truncate">[VIDEO_STREAM]</h2>
+                <button id="close-video-modal-btn" class="text-gray-500 hover:text-red-400 text-2xl">&times;</button>
+            </header>
+            <div class="p-2 bg-black flex-1 flex items-center justify-center">
+                <div id="video-wrapper" class="w-full h-auto max-h-full aspect-video">
+                    <video id="player" playsinline controls class="w-full h-full"></video>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Critical CSS and JS loaded immediately -->
+    <!-- Critical scripts loaded immediately -->
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js" onload="console.log('Plyr loaded successfully')" onerror="console.error('Failed to load Plyr')"></script>
+
+    <!-- Core configuration and utilities -->
+    <script>
+      // Core configuration
+      const WORKER_URL = "https://compute.anyme.workers.dev";
+
+      // Initialize video player function
+      function initializeVideoPlayer(container) {
+        if (typeof Plyr !== 'undefined' && container) {
+          return new Plyr(container, {
+            controls: ['play-large', 'play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'fullscreen'],
+            keyboard: { focused: true, global: false },
+            tooltips: { controls: true, seek: true },
+            storage: { enabled: true, key: 'plyr' },
+            speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2] }
+          });
+        } else {
+          // Fallback video player if Plyr doesn't load
+          console.warn('Plyr not available, using native video controls');
+          if (container) {
+            container.controls = true;
+            return {
+              play: () => container.play(),
+              pause: () => container.pause(),
+              destroy: () => {},
+              on: () => {},
+              off: () => {}
+            };
+          }
+        }
+        return null;
+      }
+
+      // Simplified fallback implementations
+      if (typeof CacheManager === 'undefined') {
+        window.CacheManager = {
+          set: (key, value) => {
+            try {
+              localStorage.setItem(`cache_${key}`, JSON.stringify(value));
+              return true;
+            } catch (e) {
+              console.error('Cache failed:', e);
+              return false;
+            }
+          },
+          get: (key) => {
+            try {
+              const item = localStorage.getItem(`cache_${key}`);
+              return item ? JSON.parse(item) : null;
+            } catch (e) {
+              return null;
+            }
+          },
+          clear: () => {
+            try {
+              const keys = Object.keys(localStorage);
+              keys.forEach(key => {
+                if (key.startsWith('cache_')) {
+                  localStorage.removeItem(key);
+                }
+              });
+              return true;
+            } catch (e) {
+              return false;
+            }
+          }
+        };
+      }
+
+      if (typeof UserExperienceManager === 'undefined') {
+        window.UserExperienceManager = {
+          ResumeManager: {
+            getResumePoint: () => {
+              try {
+                return JSON.parse(localStorage.getItem('resume_watching') || 'null');
+              } catch (e) {
+                return null;
+              }
+            },
+            clearResumePoint: () => {
+              try {
+                localStorage.removeItem('resume_watching');
+              } catch (e) {
+                console.error('Failed to clear resume point:', e);
+              }
+            }
+          },
+          BookmarkManager: {
+            isBookmarked: (contentId) => {
+              try {
+                const bookmarks = JSON.parse(localStorage.getItem('user_bookmarks') || '{}');
+                return !!bookmarks[contentId];
+              } catch (e) {
+                return false;
+              }
+            },
+            addBookmark: (contentId, title, metadata = {}) => {
+              try {
+                const bookmarks = JSON.parse(localStorage.getItem('user_bookmarks') || '{}');
+                bookmarks[contentId] = { id: contentId, title, dateAdded: Date.now(), metadata };
+                localStorage.setItem('user_bookmarks', JSON.stringify(bookmarks));
+                return bookmarks[contentId];
+              } catch (e) {
+                console.error('Failed to add bookmark:', e);
+                return null;
+              }
+            },
+            removeBookmark: (contentId) => {
+              try {
+                const bookmarks = JSON.parse(localStorage.getItem('user_bookmarks') || '{}');
+                const bookmark = bookmarks[contentId];
+                delete bookmarks[contentId];
+                localStorage.setItem('user_bookmarks', JSON.stringify(bookmarks));
+                return bookmark;
+              } catch (e) {
+                console.error('Failed to remove bookmark:', e);
+                return null;
+              }
+            }
+          },
+          ProgressTracker: {
+            updateProgress: (contentId, progress, metadata = {}) => {
+              try {
+                const allProgress = JSON.parse(localStorage.getItem('user_progress') || '{}');
+                allProgress[contentId] = {
+                  contentId,
+                  progress: Math.min(Math.max(progress, 0), 100),
+                  lastUpdated: Date.now(),
+                  metadata,
+                  completed: progress >= 95
+                };
+                localStorage.setItem('user_progress', JSON.stringify(allProgress));
+                return allProgress[contentId];
+              } catch (e) {
+                console.error('Failed to update progress:', e);
+                return null;
+              }
+            },
+            getProgress: (contentId) => {
+              try {
+                const allProgress = JSON.parse(localStorage.getItem('user_progress') || '{}');
+                return allProgress[contentId] || null;
+              } catch (e) {
+                return null;
+              }
+            }
+          },
+          PreferencesManager: {
+            getPreference: (key, defaultValue = null) => {
+              try {
+                const preferences = JSON.parse(localStorage.getItem('user_preferences') || '{}');
+                return preferences[key] !== undefined ? preferences[key] : defaultValue;
+              } catch (e) {
+                return defaultValue;
+              }
+            },
+            setPreference: (key, value) => {
+              try {
+                const preferences = JSON.parse(localStorage.getItem('user_preferences') || '{}');
+                preferences[key] = value;
+                localStorage.setItem('user_preferences', JSON.stringify(preferences));
+              } catch (e) {
+                console.error('Failed to set preference:', e);
+              }
+            }
+          }
+        };
+      }
+
+      if (typeof ErrorHandler === 'undefined') {
+        window.ErrorHandler = {
+          log: (error, context = {}) => {
+            console.error('Error logged:', error, context);
+            return 'ERR_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+          },
+          handleAPIError: async (error, retryFn, context = {}) => {
+            console.error('API Error:', error, context);
+            if (retryFn) {
+              try {
+                return await retryFn();
+              } catch (retryError) {
+                console.error('Retry failed:', retryError);
+                throw retryError;
+              }
+            }
+            throw error;
+          },
+          handleNetworkError: (error, context = {}) => {
+            console.error('Network Error:', error, context);
+          }
+        };
+      }
+
+      // Error handler for missing functions
+      window.addEventListener('error', function(event) {
+        if (event.message.includes('is not defined')) {
+          console.warn('Function not loaded yet:', event.message);
+          // Prevent page crashes from missing functions
+          event.preventDefault();
+        }
+      });
+
+      // Global notification function
+      if (typeof showNotification === 'undefined') {
+        window.showNotification = function(message, type = 'info', duration = 5000) {
+          const notification = document.createElement('div');
+          notification.className = `notification notification-${type} fixed top-4 right-4 z-50 max-w-sm w-full bg-gray-900/90 border border-gray-700/50 rounded-lg shadow-lg backdrop-blur-sm transform translate-x-full transition-transform duration-300`;
+          notification.innerHTML = `
+            <div class="p-4">
+              <div class="flex items-center space-x-2">
+                <span>${message}</span>
+                <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white/70 hover:text-white">×</button>
+              </div>
+            </div>
+          `;
+
+          document.body.appendChild(notification);
+
+          setTimeout(() => {
+            if (notification.parentNode) {
+              notification.remove();
+            }
+          }, duration);
+        };
+      }
+
+      // Additional fallback functions
+      if (typeof playResumeVideo === 'undefined') {
+        window.playResumeVideo = function(url, contentId = null) {
+          console.warn('playResumeVideo not available, using fallback');
+          const videoPlayerModal = document.getElementById("video-player-modal");
+          if (videoPlayerModal) {
+            const player = document.getElementById('player');
+            if (player) {
+              player.src = url;
+              videoPlayerModal.classList.remove('hidden');
+            }
+          }
+        };
+      }
+
+      if (typeof toggleBookmark === 'undefined') {
+        window.toggleBookmark = function(contentId, title, metadata = {}) {
+          console.warn('toggleBookmark not available, using fallback');
+          if (UserExperienceManager.BookmarkManager.isBookmarked(contentId)) {
+            UserExperienceManager.BookmarkManager.removeBookmark(contentId);
+            showNotification('Bookmark removed', 'info');
+          } else {
+            UserExperienceManager.BookmarkManager.addBookmark(contentId, title, metadata);
+            showNotification('Bookmark added', 'success');
+          }
+        };
+      }
+
+      if (typeof showProgressSummary === 'undefined') {
+        window.showProgressSummary = function() {
+          console.warn('showProgressSummary not available, using fallback');
+          showNotification('Progress tracking not available', 'info');
+        };
+      }
+
+      if (typeof copyToClipboard === 'undefined') {
+        window.copyToClipboard = function(elementId) {
+          console.warn('copyToClipboard not available, using fallback');
+          const textarea = document.getElementById(elementId);
+          if (textarea) {
+            textarea.select();
+            try {
+              document.execCommand('copy');
+              showNotification('Copied to clipboard', 'success');
+            } catch (e) {
+              showNotification('Copy failed', 'error');
+            }
+          }
+        };
+      }
+
+      if (typeof initializeMobileGestures === 'undefined') {
+        window.initializeMobileGestures = function() {
+          console.warn('initializeMobileGestures not available, using fallback');
+          // Basic mobile gesture support
+          if (window.innerWidth <= 768) {
+            console.log('Mobile gestures initialized (fallback)');
+          }
+        };
+      }
+
+      if (typeof openMobileSidebar === 'undefined') {
+        window.openMobileSidebar = function() {
+          const mobileSidebar = document.getElementById('mobile-sidebar');
+          const mobileMenuScrim = document.getElementById('mobile-menu-scrim');
+          if (mobileSidebar && mobileMenuScrim) {
+            mobileSidebar.classList.remove('translate-x-full');
+            mobileMenuScrim.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+          }
+        };
+      }
+
+      if (typeof closeMobileSidebar === 'undefined') {
+        window.closeMobileSidebar = function() {
+          const mobileSidebar = document.getElementById('mobile-sidebar');
+          const mobileMenuScrim = document.getElementById('mobile-menu-scrim');
+          if (mobileSidebar && mobileMenuScrim) {
+            mobileSidebar.classList.add('translate-x-full');
+            mobileMenuScrim.classList.add('hidden');
+            document.body.style.overflow = '';
+          }
+        };
+      }
+    </script>
+
+    <script src="utils/constants.js" defer onload="console.log('constants.js loaded successfully')" onerror="console.error('Failed to load constants.js')"></script>
+    <script src="utils/helpers.js" defer onload="console.log('helpers.js loaded successfully')" onerror="console.error('Failed to load helpers.js')"></script>
+    <script src="auth.js" defer onload="console.log('auth.js loaded successfully')" onerror="console.error('Failed to load auth.js')"></script>
+    <script src="video.js" defer onload="console.log('video.js loaded successfully')" onerror="console.error('Failed to load video.js')"></script>
+
+    <!-- Lazy load non-critical components -->
+    <script>
+      // Component loading is handled by the fetch API below
+
+      // Intersection Observer for lazy loading images and videos
+      if ('IntersectionObserver' in window) {
+        const lazyElements = document.querySelectorAll('[data-lazy-src]');
+
+        const lazyObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const element = entry.target;
+              const src = element.getAttribute('data-lazy-src');
+
+              if (element.tagName === 'IMG') {
+                element.src = src;
+                element.removeAttribute('data-lazy-src');
+              } else if (element.tagName === 'VIDEO') {
+                element.src = src;
+                element.removeAttribute('data-lazy-src');
+                element.load();
+              }
+
+              element.classList.add('loaded');
+              lazyObserver.unobserve(element);
+            }
+          });
+        }, {
+          root: null,
+          rootMargin: '50px',
+          threshold: 0.1
+        });
+
+        lazyElements.forEach(element => {
+          lazyObserver.observe(element);
+        });
+      }
+
+    </script>
+
+    <!-- Component Loading Script -->
+    <script>
+      // Load component files dynamically
+      document.addEventListener('DOMContentLoaded', function() {
+        // Load navigation component
+        fetch('components/navigation.html')
+          .then(response => response.text())
+          .then(html => {
+            document.getElementById('navigation-container').innerHTML = html;
+            // Initialize mobile gestures after navigation loads
+            initializeMobileGestures();
+          })
+          .catch(error => {
+            console.error('Error loading navigation component:', error);
+            ErrorHandler.handleAPIError(error, () => location.reload(), {
+              context: 'Loading navigation component'
+            });
+          });
+
+        // Load content views component
+        fetch('components/content-views.html')
+          .then(response => response.text())
+          .then(html => {
+            document.getElementById('content-views-container').innerHTML = html;
+          })
+          .catch(error => {
+            console.error('Error loading content views component:', error);
+            ErrorHandler.handleAPIError(error, () => location.reload(), {
+              context: 'Loading content views component'
+            });
+          });
+      });
+
+      // Mobile Touch Gestures Support
+      function initializeMobileGestures() {
+        if (window.innerWidth > 768) return; // Only for mobile
+
+        const mobileSidebar = document.getElementById('mobile-sidebar');
+        const mobileMenuScrim = document.getElementById('mobile-menu-scrim');
+        const swipeIndicatorLeft = document.getElementById('swipe-indicator-left');
+        const swipeIndicatorRight = document.getElementById('swipe-indicator-right');
+
+        if (!mobileSidebar || !mobileMenuScrim) return;
+
+        let startX = 0;
+        let startY = 0;
+        let currentX = 0;
+        let isDragging = false;
+
+        // Touch start
+        document.addEventListener('touchstart', (e) => {
+          if (window.innerWidth <= 768) {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+            isDragging = false;
+          }
+        }, { passive: true });
+
+        // Touch move
+        document.addEventListener('touchmove', (e) => {
+          if (window.innerWidth <= 768 && !isDragging) {
+            currentX = e.touches[0].clientX;
+            const deltaX = currentX - startX;
+            const deltaY = Math.abs(e.touches[0].clientY - startY);
+
+            // Only handle horizontal swipes
+            if (Math.abs(deltaX) > 10 && deltaX > deltaY) {
+              isDragging = true;
+
+              // Show swipe indicators
+              if (swipeIndicatorLeft && swipeIndicatorRight) {
+                if (deltaX > 0) {
+                  swipeIndicatorLeft.style.opacity = '1';
+                } else {
+                  swipeIndicatorRight.style.opacity = '1';
+                }
+              }
+            }
+          }
+        }, { passive: true });
+
+        // Touch end
+        document.addEventListener('touchend', (e) => {
+          if (window.innerWidth <= 768 && isDragging) {
+            const deltaX = currentX - startX;
+            const threshold = 50;
+
+            // Hide swipe indicators
+            if (swipeIndicatorLeft && swipeIndicatorRight) {
+              swipeIndicatorLeft.style.opacity = '0';
+              swipeIndicatorRight.style.opacity = '0';
+            }
+
+            // Check if swipe is significant enough
+            if (Math.abs(deltaX) > threshold) {
+              if (deltaX > 0) {
+                // Swipe right - close mobile menu if open
+                if (!mobileSidebar.classList.contains('translate-x-full')) {
+                  closeMobileSidebar();
+                }
+              } else {
+                // Swipe left - open mobile menu if closed
+                if (mobileSidebar.classList.contains('translate-x-full')) {
+                  openMobileSidebar();
+                }
+              }
+            }
+          }
+          isDragging = false;
+        });
+
+        // Enhanced touch feedback for buttons
+        const touchElements = document.querySelectorAll('button, .touch-manipulation');
+        touchElements.forEach(element => {
+          element.addEventListener('touchstart', function() {
+            this.style.transform = 'scale(0.95)';
+          }, { passive: true });
+
+          element.addEventListener('touchend', function() {
+            this.style.transform = '';
+          }, { passive: true });
+        });
+
+        // Prevent zoom on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+          const now = Date.now();
+          if (now - lastTouchEnd <= 300) {
+            e.preventDefault();
+          }
+          lastTouchEnd = now;
+        }, { passive: false });
+      }
+
+      // Enhanced mobile sidebar functions
+      function openMobileSidebar() {
+        const mobileSidebar = document.getElementById('mobile-sidebar');
+        const mobileMenuScrim = document.getElementById('mobile-menu-scrim');
+
+        if (mobileSidebar && mobileMenuScrim) {
+          mobileSidebar.classList.remove('translate-x-full');
+          mobileMenuScrim.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+
+          // Add touch-friendly scrolling
+          mobileSidebar.style.overflowY = 'auto';
+          mobileSidebar.style.webkitOverflowScrolling = 'touch';
+        }
+      }
+
+      function closeMobileSidebar() {
+        const mobileSidebar = document.getElementById('mobile-sidebar');
+        const mobileMenuScrim = document.getElementById('mobile-menu-scrim');
+
+        if (mobileSidebar && mobileMenuScrim) {
+          mobileSidebar.classList.add('translate-x-full');
+          mobileMenuScrim.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      }
+
+      // Mobile-specific viewport handling
+      function handleViewportChange() {
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if (window.innerWidth <= 768) {
+          viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+        } else {
+          viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+        }
+      }
+
+      // Listen for orientation changes
+      window.addEventListener('orientationchange', () => {
+        setTimeout(handleViewportChange, 100);
+      });
+
+      // Initial mobile setup
+      handleViewportChange();
+    </script>
+    <script>
+      const views = {
+        categories: document.getElementById("categories-view"),
+        courses: document.getElementById("courses-view"),
+        subjects: document.getElementById("subjects-view"),
+        topics: document.getElementById("topics-view"),
+        videos: document.getElementById("videos-view"),
+        plan_details: document.getElementById("plan-details-view"),
+      };
+      const grids = {
+        categories: document.getElementById("category-grid"),
+        courses: document.getElementById("course-grid"),
+        subjects: document.getElementById("subject-grid"),
+        topics: document.getElementById("topic-grid"),
+        videos: document.getElementById("video-grid"),
+      };
+      const headers = {
+        category: document.getElementById("category-title-header"),
+        course: document.getElementById("course-title-header"),
+        subjectForTopics: document.getElementById(
+          "subject-title-header-for-topics"
+        ),
+        video: document.getElementById("video-list-header"),
+        plan: document.getElementById("plan-title-header"),
+      };
+      const breadcrumbsEl = document.getElementById("breadcrumbs");
+      const downloadModal = document.getElementById("download-modal");
+      const errorModal = document.getElementById("error-modal");
+      const closeErrorModalBtn = document.getElementById(
+        "close-error-modal-btn"
+      );
+      const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+      const mobileSidebar = document.getElementById("mobile-sidebar");
+      const closeMobileSidebarBtn = document.getElementById("close-mobile-sidebar");
+      const mobileMenuScrim = document.getElementById("mobile-menu-scrim");
+      const searchBtn = document.getElementById("search-btn");
+      const mobileSearchBtn = document.getElementById("mobile-search-btn");
+      const backButtons = {
+          toCategories: document.getElementById("back-to-categories"),
+          toCourses: document.getElementById("back-to-courses"),
+          toSubjects: document.getElementById("back-to-subjects"),
+          toLastView: document.getElementById("back-to-last-view"),
+          fromPlan: document.getElementById("back-to-categories-from-plan"),
+      };
+
+      let state = {
+          videoList: [],
+          navigationHistory: [], // The key to fixing the back button
+          currentCategoryName: null,
+          currentCourseTitle: null,
+          currentSubjectTitle: null,
+          currentTopicName: null,
+          currentPlanTitle: null, // The key to fixing the breadcrumbs
+      };
+
+      // SEARCH FIX: State to hold all browsable content for searching
+      let searchIndex = {
+          categories: [],
+          courses: [],
+          subjects: [],
+          topics: [],
+          notes: [],
+          tests: [],
+          plans: []
+      };
+
+      function showErrorModal() {
+        errorModal.classList.remove("hidden");
+      }
+
+      function hideErrorModal() {
+        errorModal.classList.add("hidden");
+      }
+
+      function showSearchModal() {
+        const searchModal = document.getElementById("search-modal");
+        if (searchModal) {
+          searchModal.classList.remove("hidden");
+          const searchInput = document.getElementById("search-input");
+          if (searchInput) searchInput.focus();
+        }
+      }
+
+      function hideSearchModal() {
+        const searchModal = document.getElementById("search-modal");
+        if (searchModal) searchModal.classList.add("hidden");
+      }
+
+      function openMobileSidebar() {
+        if(mobileSidebar && mobileMenuScrim) {
+            mobileSidebar.classList.remove('translate-x-full');
+            mobileMenuScrim.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+      }
+
+      function closeMobileSidebar() {
+        if(mobileSidebar && mobileMenuScrim) {
+            mobileSidebar.classList.add('translate-x-full');
+            mobileMenuScrim.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        if(mobileMenuBtn) mobileMenuBtn.addEventListener('click', openMobileSidebar);
+        if(closeMobileSidebarBtn) closeMobileSidebarBtn.addEventListener('click', closeMobileSidebar);
+        if(mobileMenuScrim) mobileMenuScrim.addEventListener('click', closeMobileSidebar);
+        if(searchBtn) searchBtn.addEventListener('click', showSearchModal);
+        if(mobileSearchBtn) mobileSearchBtn.addEventListener('click', () => {
+            closeMobileSidebar();
+            showSearchModal();
+        });
+
+
+        const closeSearchModal = document.getElementById("close-search-modal");
+        const searchModal = document.getElementById("search-modal");
+        const searchInput = document.getElementById("search-input");
+        
+        if (closeSearchModal) {
+          closeSearchModal.addEventListener("click", hideSearchModal);
+        }
+
+        if (searchModal) {
+          searchModal.addEventListener("click", (e) => {
+            if (e.target === searchModal) hideSearchModal();
+          });
+        }
+
+        let searchTimeout;
+        if (searchInput) {
+          searchInput.addEventListener("input", (e) => {
+            clearTimeout(searchTimeout);
+            const query = e.target.value.trim();
+            searchTimeout = setTimeout(() => {
+              performSearch(query);
+            }, 300);
+          });
+        }
+        // Resume Watching Feature with enhanced UX
+        const resumeInfo = UserExperienceManager.ResumeManager.getResumePoint();
+        const resumeCard = document.getElementById('resume-watching-card');
+        if (resumeInfo && resumeCard) {
+            const progressPercent = Math.round(resumeInfo.progress || 0);
+            resumeCard.innerHTML = `
+                <div class="content-card p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold">Resume Watching</h2>
+                        <span class="text-sm text-green-400 bg-green-900/30 px-2 py-1 rounded">
+                            ${progressPercent}% Complete
+                        </span>
+                    </div>
+                    <h3 class="text-lg text-green-300 mb-2">${resumeInfo.title}</h3>
+                    <div class="w-full bg-gray-700 rounded-full h-2 mb-4">
+                        <div class="bg-green-500 h-2 rounded-full transition-all duration-300" style="width: ${progressPercent}%"></div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="playResumeVideo('${resumeInfo.url}', '${resumeInfo.contentId}')" class="btn-primary flex-1">
+                            [RESUME WATCHING]
+                        </button>
+                        <button onclick="UserExperienceManager.ResumeManager.clearResumePoint(); location.reload()" class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded transition-colors duration-200">
+                            [CLEAR]
+                        </button>
+                    </div>
+                </div>
+            `;
+            resumeCard.classList.remove('hidden');
+        }
+
+        // Add this listener for the new "My Plans" grid
+        document.getElementById("my-plans-grid").addEventListener("click", (e) => {
+            const card = e.target.closest(".plan-card");
+            if (card) {
+                fetchAndDisplayPlanChildCourses(card.dataset.planId, card.dataset.planTitle);
+            }
+        });
+
+        // Delegated event listener for course cards
+        document.getElementById('views-container').addEventListener('click', (e) => {
+            // This will find the closest .course-card parent from whatever was clicked
+            const card = e.target.closest(".course-card");
+            if (card) {
+                handleCourseClick(card);
+            }
+        });
+
+        // Single listener for all back buttons
+        Object.values(backButtons).forEach(btn => {
+            btn.addEventListener('click', navigateBack);
+        });
+      });
+      
+      // Enhanced Resume Watching Feature: Function to play the video
+      function playResumeVideo(url, contentId = null) {
+          const videoPlayerModal = document.getElementById("video-player-modal");
+          const player = new Plyr(document.getElementById('player'));
+
+          // Set video source
+          document.getElementById('player').src = url;
+          videoPlayerModal.classList.remove('hidden');
+
+          // Resume from saved position if available
+          if (contentId) {
+              const progress = UserExperienceManager.ProgressTracker.getProgress(contentId);
+              if (progress && progress.progress > 0) {
+                  player.on('ready', () => {
+                      player.currentTime = (progress.progress / 100) * player.duration;
+                  });
+              }
+          }
+
+          // Track video progress
+          let progressInterval;
+          player.on('play', () => {
+              progressInterval = setInterval(() => {
+                  if (player.duration && contentId) {
+                      const currentProgress = (player.currentTime / player.duration) * 100;
+                      UserExperienceManager.ProgressTracker.updateProgress(contentId, currentProgress, {
+                          duration: player.duration,
+                          currentTime: player.currentTime,
+                          title: document.getElementById('video-modal-title').textContent
+                      });
+                  }
+              }, 5000); // Update every 5 seconds
+          });
+
+          player.on('pause', () => {
+              clearInterval(progressInterval);
+          });
+
+          player.on('ended', () => {
+              clearInterval(progressInterval);
+              if (contentId) {
+                  UserExperienceManager.ProgressTracker.updateProgress(contentId, 100, {
+                      completed: true,
+                      completedAt: Date.now()
+                  });
+              }
+          });
+
+          // Auto-play if user preference is set
+          if (UserExperienceManager.PreferencesManager.getAutoplay()) {
+              player.play();
+          }
+      }
+      
+      // SEARCH FIX: Implement real search and result handling
+      function performSearch(query) {
+          const searchResults = document.getElementById("search-results");
+          if (!searchResults) return;
+
+          if (query.length < 2) {
+              searchResults.innerHTML = '<div class="text-center text-gray-400 py-4">Enter at least 2 characters to search...</div>';
+              return;
+          }
+
+          searchResults.innerHTML = '<div class="text-center text-gray-400 py-4">Searching...</div>';
+          const lowerCaseQuery = query.toLowerCase();
+          const results = [];
+
+          // Search through all content types
+          searchIndex.categories.forEach(category => {
+              if (category.name.toLowerCase().includes(lowerCaseQuery)) {
+                  results.push({ type: 'Category', ...category });
+              }
+          });
+          searchIndex.courses.forEach(course => {
+              if (course.title.toLowerCase().includes(lowerCaseQuery)) {
+                  results.push({ type: 'Course', ...course });
+              }
+          });
+          searchIndex.subjects.forEach(subject => {
+              if ((subject.title || subject.subject_name).toLowerCase().includes(lowerCaseQuery)) {
+                  results.push({ type: 'Subject', ...subject });
+              }
+          });
+           searchIndex.topics.forEach(topic => {
+              if (topic.topic_name.toLowerCase().includes(lowerCaseQuery)) {
+                  results.push({ type: 'Topic', ...topic });
+              }
+          });
+
+          displaySearchResults(results, query);
+      }
+
+      function displaySearchResults(results, query) {
+          const searchResultsEl = document.getElementById("search-results");
+          if (!searchResultsEl) return;
+
+          if (results.length === 0) {
+            searchResultsEl.innerHTML = `<div class="text-center text-gray-400 py-4">No results found for "${query}"</div>`;
+            return;
+          }
+
+          const resultsHtml = results.map(result => {
+              let title = result.name || result.title || result.topic_name;
+              let parentInfo = '';
+              if(result.type === 'Course') parentInfo = searchIndex.categories.find(c => c.id === result.cat_id)?.name || '';
+              if(result.type === 'Subject') parentInfo = result.courseTitle;
+              if(result.type === 'Topic') parentInfo = result.subjectTitle;
+
+              return `
+                <div class="bg-gray-900/30 p-3 rounded-lg border border-gray-700/50 hover:bg-gray-900/50 cursor-pointer transition-all duration-200 search-result-item"
+                     onclick='handleSearchResultClick(${JSON.stringify(result)})'>
+                  <div class="flex items-center space-x-2">
+                    <span class="text-xs bg-green-800/50 text-green-300 px-2 py-1 rounded">${result.type.toUpperCase()}</span>
+                    <h3 class="text-green-300 font-medium">${highlightText(title, query)}</h3>
+                  </div>
+                  <p class="text-xs text-gray-400 mt-1">${parentInfo}</p>
+                </div>
+              `
+            }).join("");
+
+          searchResultsEl.innerHTML = resultsHtml;
+      }
+
+      function handleSearchResultClick(result) {
+          hideSearchModal();
+          if (result.type === 'Category') {
+              fetchAndDisplayCourses(result.id, result.name);
+          } else if (result.type === 'Course') {
+              fetchAndDisplaySubjects(result.course_id, result.title, result.course_type);
+          } else if (result.type === 'Subject') {
+              const subjectTitle = result.title || result.subject_name;
+              if (result.courseType === "6") {
+                  fetchAndDisplayTopics(result.courseId, result.id, subjectTitle, result.courseType);
+              } else {
+                  fetchAndDisplayVideos(result.courseId, result.id, subjectTitle, result.courseType);
+              }
+          } else if (result.type === 'Topic') {
+              fetchAndDisplayVideos(result.courseId, result.id, result.topic_name, '6', result.subjectId);
+          }
+      }
+
+      function highlightText(text, query) {
+          if (!query) return text;
+          const regex = new RegExp(`(${query})`, 'gi');
+          return text.replace(regex, '<span class="bg-yellow-600/30 text-yellow-300">$1</span>');
+      }
+
+
+      function getFileExtension(url) {
+        if (!url) return "";
+        try {
+          const path = new URL(url).pathname;
+          const extension = path.split(".").pop();
+          return extension && extension.length <= 4 ? `.${extension}` : ".file";
+        } catch (e) {
+          return ".file";
+        }
+      }
+      // Find and replace your existing 'updateBreadcrumbs' and 'showView' functions
+      function updateBreadcrumbs() {
+          let path = `<span class="cursor-pointer hover:text-green-300" onclick="navigateTo('categories', { navigationHistory: ['categories'] })">./</span>`;
+          if (state.currentPlanTitle) path += `<span class="text-gray-600">/</span><span class="text-green-500 truncate" title="${state.currentPlanTitle}">${state.currentPlanTitle}</span>`;
+          if (state.currentCategoryName) path += `<span class="text-gray-600">/</span><span class="text-green-500 truncate" title="${state.currentCategoryName}">${state.currentCategoryName}</span>`;
+          if (state.currentCourseTitle) path += `<span class="text-gray-600">/</span><span class="text-green-500 truncate" title="${state.currentCourseTitle}">${state.currentCourseTitle}</span>`;
+          if (state.currentSubjectTitle) path += `<span class="text-gray-600">/</span><span class="text-green-500 truncate" title="${state.currentSubjectTitle}">${state.currentSubjectTitle}</span>`;
+          if (state.currentTopicName) path += `<span class="text-gray-600">/</span><span class="text-green-500 truncate" title="${state.currentTopicName}">${state.currentTopicName}</span>`;
+          breadcrumbsEl.innerHTML = path;
+      }
+
+      function showView(viewName) {
+          Object.keys(views).forEach((key) => views[key].classList.add("hidden"));
+          if (views[viewName]) {
+              views[viewName].classList.remove("hidden");
+          }
+          updateBreadcrumbs();
+          updateBackButton();
+      }
+
+      // Add these new functions right after showView()
+      function navigateTo(viewName, data = {}) {
+          state = { ...state, ...data };
+          state.navigationHistory.push(viewName);
+          showView(viewName);
+      }
+
+      function navigateBack() {
+          if (state.navigationHistory.length <= 1) return;
+          state.navigationHistory.pop(); // Remove current view
+          const previousView = state.navigationHistory[state.navigationHistory.length - 1];
+
+          // Clean up state when going back
+          if (previousView === 'categories') state = { ...state, currentCategoryName: null, currentCourseTitle: null, currentSubjectTitle: null, currentTopicName: null, currentPlanTitle: null };
+          if (previousView === 'courses') state = { ...state, currentCourseTitle: null, currentSubjectTitle: null, currentTopicName: null };
+          if (previousView === 'plan_details') state = { ...state, currentCourseTitle: null, currentSubjectTitle: null, currentTopicName: null };
+          if (previousView === 'subjects') state = { ...state, currentSubjectTitle: null, currentTopicName: null };
+          if (previousView === 'topics') state = { ...state, currentTopicName: null };
+          
+          showView(previousView);
+      }
+
+      function updateBackButton() {
+          Object.values(backButtons).forEach(btn => btn.style.display = 'none');
+          const currentView = state.navigationHistory[state.navigationHistory.length - 1];
+          switch (currentView) {
+              case 'courses': backButtons.toCategories.style.display = 'block'; break;
+              case 'subjects': backButtons.toCourses.style.display = 'block'; break;
+              case 'topics': backButtons.toSubjects.style.display = 'block'; break;
+              case 'videos': backButtons.toLastView.style.display = 'block'; break;
+              case 'plan_details': backButtons.fromPlan.style.display = 'block'; break;
+          }
+      }
+      document
+        .getElementById("back-to-categories")
+        .addEventListener("click", () => {
+          state = {};
+          showView("categories");
+        });
+      document
+        .getElementById("back-to-courses")
+        .addEventListener("click", () => {
+          state = {
+            ...state,
+            currentCourseTitle: null,
+            currentSubjectTitle: null,
+            currentTopicName: null,
+          };
+          showView("courses");
+        });
+      document
+        .getElementById("back-to-subjects")
+        .addEventListener("click", () => {
+          state = {
+            ...state,
+            currentSubjectTitle: null,
+            currentTopicName: null,
+          };
+          showView("subjects");
+        });
+      document
+        .getElementById("back-to-last-view")
+        .addEventListener("click", () => {
+          const lastView =
+            state.currentCourseType === "6" ? "topics" : "subjects";
+          state = { ...state, currentTopicName: null };
+          showView(lastView);
+        });
+      grids.categories.addEventListener("click", (e) => {
+        const card = e.target.closest(".category-card");
+        if (card)
+          fetchAndDisplayCourses(
+            card.dataset.categoryId,
+            card.dataset.categoryName
+          );
+      });
+/*     grids.courses.addEventListener("click", (e) => {
+        const card = e.target.closest(".course-card");
+        if (!card) return;
+        const courseType = card.dataset.courseType;
+        const courseId = card.dataset.courseId;
+        const courseTitle = card.dataset.courseTitle;
+        if (courseType === "3") {
+          window.location.href = `qbank.html?course_id=${courseId}&title=${encodeURIComponent(
+            courseTitle
+          )}`;
+        } else if (courseType === "2") {
+          window.location.href = `testseries.html?course_id=${courseId}&title=${encodeURIComponent(
+            courseTitle
+          )}`;
+        } else {
+          fetchAndDisplaySubjects(courseId, courseTitle, courseType);
+        }
+      }); */
+      grids.subjects.addEventListener("click", (e) => {
+        const card = e.target.closest(".subject-card");
+        if (!card) return;
+        const courseType = card.dataset.courseType;
+        state.currentSubjectTitle = card.dataset.subjectTitle;
+        if (courseType === "6") {
+          fetchAndDisplayTopics(
+            state.currentCourseId,
+            card.dataset.subjectId,
+            card.dataset.subjectTitle,
+            courseType
+          );
+        } else {
+          fetchAndDisplayVideos(
+            state.currentCourseId,
+            card.dataset.subjectId,
+            card.dataset.subjectTitle,
+            courseType
+          );
+        }
+      });
+      grids.topics.addEventListener("click", (e) => {
+        const card = e.target.closest(".topic-card");
+        if (card) {
+          state.currentTopicName = card.dataset.topicName;
+          fetchAndDisplayVideos(
+            state.currentCourseId,
+            card.dataset.topicId,
+            card.dataset.topicName,
+            "6",
+            state.currentSubjectId
+          );
+        }
+      });
+      document
+        .getElementById("download-all-btn")
+        .addEventListener("click", generateDownloadScripts);
+      document
+        .getElementById("close-modal-btn")
+        .addEventListener("click", () => downloadModal.classList.add("hidden"));
+      closeErrorModalBtn.addEventListener("click", hideErrorModal);
+
+      function copyToClipboard(elementId) {
+        const textarea = document.getElementById(elementId);
+        textarea.select();
+        document.execCommand("copy");
+      }
+      function generateDownloadScripts() {
+        let idmLinks = "";
+        let aria2cScript = "";
+        state.videoList.forEach((video) => {
+          const videoTitle =
+            state.currentCourseType === "6" ? video.title : video.video_title;
+          const notesUrl =
+            state.currentCourseType === "6" ? video.notes_url : video.notes_url;
+          const videoUrl =
+            state.currentCourseType === "6" ? video.file_url : video.file_url;
+          const topicName = state.currentTopicName || state.currentSubjectTitle;
+          const videoExt = getFileExtension(videoUrl);
+          const notesExt = getFileExtension(notesUrl);
+          let videoFileName, notesFileName;
+          if (state.currentCourseType === "6") {
+            videoFileName = `${videoTitle.trim()} - ${topicName} - ${
+              state.currentSubjectTitle
+            } - ${state.currentCourseTitle}${videoExt}`;
+            notesFileName = `${videoTitle.trim()} - ${topicName} - ${
+              state.currentSubjectTitle
+            } - ${state.currentCourseTitle} - Notes${notesExt}`;
+          } else {
+            videoFileName = `${videoTitle.trim()} - ${topicName} - ${
+              state.currentCourseTitle
+            }${videoExt}`;
+            notesFileName = `${videoTitle.trim()} - ${topicName} - ${
+              state.currentCourseTitle
+            } - Notes${notesExt}`;
+          }
+          if (videoUrl) {
+            const videoDownloadUrl = `${WORKER_URL}?action=download&filename=${encodeURIComponent(
+              videoFileName
+            )}&url=${encodeURIComponent(videoUrl)}`;
+            idmLinks += `${videoDownloadUrl}\n`;
+            aria2cScript += `aria2c -x 16 -s 16 -k 1M "${videoDownloadUrl}" -o "${videoFileName}"\n`;
+          }
+          if (notesUrl) {
+            const notesDownloadUrl = `${WORKER_URL}?action=download&filename=${encodeURIComponent(
+              notesFileName
+            )}&url=${encodeURIComponent(notesUrl)}`;
+            idmLinks += `${notesDownloadUrl}\n`;
+            aria2cScript += `aria2c -x 16 -s 16 -k 1M "${notesDownloadUrl}" -o "${notesFileName}"\n`;
+          }
+        });
+        document.getElementById("idm-links").value = idmLinks.trim();
+        document.getElementById("aria2c-script").value = aria2cScript.trim();
+        downloadModal.classList.remove("hidden");
+      }
+
+      async function fetchAndDisplayCategories(isRetry = false) {
+          if (isRetry) {
+            state.navigationHistory = [];
+          }
+          navigateTo('categories', { navigationHistory: ['categories'] });
+          grids.categories.innerHTML = `<div class="col-span-full text-center animate-pulse p-6 content-card">Loading categories...</div>`;
+
+          try {
+              const response = await fetch(WORKER_URL);
+              if (!response.ok) throw new Error(`API call failed: ${response.status}`);
+              const data = await response.json();
+
+              searchIndex.categories = data;
+              displayCategories(data);
+          } catch (error) {
+              console.error("Connection Error:", error);
+              grids.categories.innerHTML = `<div class="col-span-full text-center text-red-500 p-6 content-card">[ERROR] Could not load categories.</div>`;
+          }
+
+          function displayCategories(data) {
+              grids.categories.innerHTML = "";
+              data.forEach((category) => {
+                  grids.categories.insertAdjacentHTML( "beforeend", `<div class="category-card p-4 sm:p-6 rounded-md border border-green-700/50 bg-black hover:border-green-500/80 cursor-pointer content-card" data-category-id="${category.id}" data-category-name="${category.name}"><h3 class="text-lg font-bold">${category.name}</h3></div>`);
+              });
+          }
+      }
+
+      async function fetchAndDisplayCourses(categoryId, categoryName) {
+          navigateTo('courses', { currentCategoryId: categoryId, currentCategoryName: categoryName });
+          headers.category.innerText = categoryName;
+          grids.courses.innerHTML = `<div class="col-span-full text-center animate-pulse p-6 content-card">Loading courses...</div>`;
+          try {
+              const response = await fetch(`${WORKER_URL}?view=courses&category_id=${categoryId}`);
+              if (!response.ok) throw new Error(`API call failed: ${response.status}`);
+              const data = await response.json();
+              searchIndex.courses = data;
+              grids.courses.innerHTML = "";
+              data.forEach((course) => {
+                  grids.courses.insertAdjacentHTML( "beforeend", `<div class="course-card p-4 sm:p-6 rounded-md border border-green-700/50 bg-black hover:border-green-500/80 cursor-pointer content-card" data-course-id="${course.course_id}" data-course-title="${course.title}" data-course-type="${course.course_type}"><h3 class="text-lg font-bold">${course.title}</h3></div>`);
+              });
+          } catch (error) {
+              console.error("Course Loading Error:", error);
+              grids.courses.innerHTML = "";
+
+              // Use enhanced error handling
+              if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                  ErrorHandler.handleNetworkError(error, {
+                      context: `Loading courses for ${categoryName}`,
+                      autoRetry: true,
+                      retryFn: () => fetchAndDisplayCourses(categoryId, categoryName)
+                  });
+              } else {
+                  ErrorHandler.handleAPIError(error, () => fetchAndDisplayCourses(categoryId, categoryName), {
+                      context: `Loading courses for ${categoryName}`
+                  });
+              }
+          }
+      }
+
+      
+      // In index.html, replace the old function with this one
+      async function fetchAndDisplaySubjects(courseId, courseTitle, courseType) {
+          navigateTo('subjects', { currentCourseId: courseId, currentCourseTitle: courseTitle, currentCourseType: courseType });
+          headers.course.innerText = courseTitle;
+
+          grids.subjects.innerHTML = `<div class="col-span-full text-center animate-pulse p-6 content-card">Loading subjects...</div>`;
+          const notesTestGrid = document.getElementById('notes-test-grid');
+          notesTestGrid.innerHTML = `<div class="col-span-full text-center animate-pulse p-6 content-card">Loading notes & tests...</div>`;
+
+          try {
+              const [subjectsResponse, notesAndTestResponse] = await Promise.all([
+                  fetch(`${WORKER_URL}?view=subjects&course_id=${courseId}&course_type=${courseType}`),
+                  fetch(`${WORKER_URL}?view=course_notes_and_test_data&course_id=${courseId}`)
+              ]);
+
+              if (!subjectsResponse.ok || !notesAndTestResponse.ok) {
+                  throw new Error(`API call failed`);
+              }
+
+              const subjectsData = await subjectsResponse.json();
+              const notesAndTestData = await notesAndTestResponse.json();
+
+              // Render Subjects (no changes here)
+              grids.subjects.innerHTML = "";
+              if (!subjectsData.length) {
+                  grids.subjects.innerHTML = `<div class="col-span-full text-center text-yellow-400 p-6 content-card">[!] No subjects found.</div>`;
+              } else {
+                  subjectsData.forEach((subject) => {
+                      const subjectId = subject.id;
+                      const subjectName = courseType === "6" ? subject.subject_name : subject.title;
+                      grids.subjects.insertAdjacentHTML(
+                          "beforeend",
+                          `<div class="subject-card p-4 sm:p-6 rounded-md border border-green-700/50 bg-black hover:border-green-500/80 cursor-pointer content-card" data-subject-id="${subjectId}" data-subject-title="${subjectName}" data-course-type="${courseType}"><h3 class="text-lg font-bold">${subjectName}</h3></div>`
+                      );
+                  });
+              }
+
+              // Render Notes & Tests (with new logic)
+              notesTestGrid.innerHTML = "";
+              if (!notesAndTestData.length || !notesAndTestData[0]?.list || notesAndTestData[0].list.length === 0) {
+                  notesTestGrid.innerHTML = `<div class="col-span-full text-center text-gray-400 p-6 content-card">[No additional notes or tests found for this course.]</div>`;
+              } else {
+                  notesAndTestData[0].list.forEach(item => {
+                      if (item.data && item.data.length > 0) {
+                          item.data.forEach(contentItem => {
+                              let cardHtml = '';
+                              
+                              // **FIX 1:** Check for file_type and use thumbnail_url
+                              if (contentItem.file_type === '1' && contentItem.thumbnail_url) {
+                                  const fileExtension = contentItem.type || 'pdf';
+                                  const fileName = `${contentItem.title.trim()}.${fileExtension}`;
+                                  // **FIX 2:** Use thumbnail_url as the source for the download
+                                  const downloadUrl = `${WORKER_URL}?action=download&filename=${encodeURIComponent(fileName)}&url=${encodeURIComponent(contentItem.thumbnail_url)}`;
+                                  
+                                  cardHtml = `
+                                      <a href="${downloadUrl}" class="notes-test-card p-4 sm:p-6 rounded-md border border-cyan-700/50 bg-black hover:border-cyan-500/80 cursor-pointer content-card flex flex-col justify-between">
+                                          <div>
+                                              <h3 class="text-lg font-bold">${item.title}</h3>
+                                              <p class="text-sm text-cyan-300">${contentItem.title}</p>
+                                          </div>
+                                          <span class="text-xs mt-2 inline-block px-2 py-1 rounded-full bg-cyan-800/50 text-cyan-300 self-start">[DOWNLOAD ${fileExtension.toUpperCase()}]</span>
+                                      </a>`;
+                              } else { // It's a test or qbank
+                                  const isQBank = contentItem.type === 'qbank';
+                                  const targetUrl = isQBank
+                                      ? `qbank.html?course_id=${courseId}&title=${encodeURIComponent(contentItem.test_series_name)}`
+                                      : `testseries.html?course_id=${courseId}&title=${encodeURIComponent(contentItem.test_series_name)}`;
+                                  const keyDataText = (contentItem.key_data || 'ITEM').toUpperCase();
+                                  
+                                  cardHtml = `
+                                      <a href="${targetUrl}" class="notes-test-card p-4 sm:p-6 rounded-md border border-yellow-700/50 bg-black hover:border-yellow-500/80 cursor-pointer content-card flex flex-col justify-between">
+                                          <div>
+                                              <h3 class="text-lg font-bold">${item.title}</h3>
+                                              <p class="text-sm text-yellow-300">${contentItem.test_series_name}</p>
+                                          </div>
+                                          <span class="text-xs mt-2 inline-block px-2 py-1 rounded-full ${isQBank ? 'bg-blue-800/50 text-blue-300' : 'bg-purple-800/50 text-purple-300'} self-start">[${keyDataText}]</span>
+                                      </a>`;
+                              }
+                              notesTestGrid.insertAdjacentHTML("beforeend", cardHtml);
+                          });
+                      }
+                  });
+              }
+          } catch (error) {
+              console.error("Data Loading Error:", error);
+              grids.subjects.innerHTML = "";
+              notesTestGrid.innerHTML = "";
+              showErrorModal();
+          }
+      }
+
+      async function fetchAndDisplayTopics(
+        courseId,
+        subjectId,
+        subjectTitle,
+        courseType
+      ) {
+        navigateTo('topics', { currentSubjectId: subjectId, currentSubjectTitle: subjectTitle });
+        headers.subjectForTopics.innerText = subjectTitle;
+        grids.topics.innerHTML = `<div class="col-span-full text-center animate-pulse p-6 content-card">Loading topics...</div>`;
+        try {
+          const response = await fetch(
+            `${WORKER_URL}?view=topics&course_id=${courseId}&subject_id=${subjectId}&course_type=${courseType}`
+          );
+          if (!response.ok) {
+            throw new Error(`API call failed: ${response.status}`);
+          }
+          const data = await response.json();
+          // SEARCH FIX: Add parent info to each topic
+          searchIndex.topics = data.map(t => ({...t, courseId, subjectId, subjectTitle}));
+          grids.topics.innerHTML = "";
+          if (!data.length) {
+            grids.topics.innerHTML = `<div class="col-span-full text-center text-yellow-400 p-6 content-card">[!] No topics found.</div>`;
+            return;
+          }
+          data.forEach((topic) => {
+            grids.topics.insertAdjacentHTML(
+              "beforeend",
+              `<div class="topic-card p-4 sm:p-6 rounded-md border border-green-700/50 bg-black hover:border-green-500/80 cursor-pointer content-card" data-topic-id="${topic.id}" data-topic-name="${topic.topic_name}"><h3 class="text-lg font-bold">${topic.topic_name}</h3></div>`
+            );
+          });
+        } catch (error) {
+          console.error("Topic Loading Error:", error);
+          grids.topics.innerHTML = "";
+          showErrorModal();
+        }
+      }
+      async function fetchAndDisplayVideos(
+        courseId,
+        id,
+        name,
+        courseType,
+        subjectIdForType6 = null
+      ) {
+        navigateTo('videos', { currentTopicName: name });
+        headers.video.innerText = name;
+        grids.videos.innerHTML = `<div class="col-span-full text-center animate-pulse p-6 content-card">Loading videos...</div>`;
+        let url = "";
+        if (courseType === "6") {
+          url = `${WORKER_URL}?view=videos&course_id=${courseId}&subject_id=${subjectIdForType6}&topic_id=${id}&course_type=${courseType}`;
+        } else {
+          url = `${WORKER_URL}?view=videos&course_id=${courseId}&topic_id=${id}&course_type=${courseType}`;
+        }
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`API call failed: ${response.status}`);
+          }
+          const data = await response.json();
+          grids.videos.innerHTML = "";
+          state.videoList = data;
+          if (!state.videoList.length) {
+            grids.videos.innerHTML = `<div class="col-span-full text-center text-yellow-400 p-6 content-card">[!] No videos found.</div>`;
+            return;
+          }
+          state.videoList.forEach((video) => {
+            const videoTitle =
+              courseType === "6" ? video.title : video.video_title;
+            const notesUrl =
+              courseType === "6" ? video.notes_url : video.notes_url;
+            const videoUrl =
+              courseType === "6" ? video.file_url : video.file_url;
+            const duration = video.duration || "N/A";
+            const liveOn = video.live_on
+              ? new Date(video.live_on * 1000).toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })
+              : "N/A";
+            const videoExt = getFileExtension(videoUrl);
+            const notesExt = getFileExtension(notesUrl);
+            let videoFileName, notesFileName;
+            if (courseType === "6") {
+              videoFileName = `${videoTitle.trim()} - ${name} - ${
+                state.currentSubjectTitle
+              } - ${state.currentCourseTitle}${videoExt}`;
+              notesFileName = `${videoTitle.trim()} - ${name} - ${
+                state.currentSubjectTitle
+              } - ${state.currentCourseTitle} - Notes${notesExt}`;
+            } else {
+              videoFileName = `${videoTitle.trim()} - ${name} - ${
+                state.currentCourseTitle
+              }${videoExt}`;
+              notesFileName = `${videoTitle.trim()} - ${name} - ${
+                state.currentCourseTitle
+              } - Notes${notesExt}`;
+            }
+            const videoDownloadUrl = `${WORKER_URL}?action=download&filename=${encodeURIComponent(
+              videoFileName
+            )}&url=${encodeURIComponent(videoUrl)}`;
+            const notesDownloadUrl = `${WORKER_URL}?action=download&filename=${encodeURIComponent(
+              notesFileName
+            )}&url=${encodeURIComponent(notesUrl)}`;
+            grids.videos.insertAdjacentHTML(
+              "beforeend",
+              // SCALING FIX: Changed button container layout
+              `<div class="p-4 sm:p-6 rounded-md border border-green-800/60 bg-black flex flex-col gap-4 content-card">
+                 <div>
+                   <h3 class="text-lg font-bold">${videoTitle}</h3>
+                   <p class="text-sm text-green-500/80">Duration: ${duration}</p>
+                   <p class="text-sm text-green-500/80">Live On: ${liveOn}</p>
+                 </div>
+                 <div class="flex flex-col sm:flex-row sm:flex-wrap gap-2">
+                   <!-- Bookmark Button -->
+                   <button class="bookmark-btn w-full sm:w-auto bg-yellow-800/50 hover:bg-yellow-700/50 text-yellow-300 font-bold py-2 px-4 rounded-md text-center ${UserExperienceManager.BookmarkManager.isBookmarked(video.id) ? 'bg-yellow-600/70' : ''}"
+                           data-content-id="${video.id}"
+                           data-title="${videoTitle}"
+                           onclick="toggleBookmark('${video.id}', '${videoTitle}', {type: 'video', courseId: state.currentCourseId, subjectId: state.currentSubjectId})">
+                     ${UserExperienceManager.BookmarkManager.isBookmarked(video.id) ? '★ Bookmarked' : '☆ Bookmark'}
+                   </button>
+
+                   ${
+                     notesUrl
+                       ? `<a href="${notesDownloadUrl}" class="w-full sm:w-auto bg-green-800/50 hover:bg-green-700/50 text-green-300 font-bold py-2 px-4 rounded-md text-center">Download Notes</a>`
+                       : ""
+                   }
+                   ${videoUrl
+                       ? `<button class="w-full sm:w-auto bg-purple-800/50 hover:bg-purple-700/50 text-purple-300 font-bold py-2 px-4 rounded-md" onclick="playVideo('${videoUrl}', '${videoTitle}')" data-content-id="${video.id}">Play Video</button>
+                          <a href="${videoDownloadUrl}" class="w-full sm:w-auto bg-blue-800/50 hover:bg-blue-700/50 text-blue-300 font-bold py-2 px-4 rounded-md text-center">Download Video</a>`
+                       : ""
+                   }
+                 </div>
+               </div>`
+            );
+          });
+        } catch (error) {
+          console.error("Video Loading Error:", error);
+          grids.videos.innerHTML = "";
+          showErrorModal();
+        }
+      }
+      // My Plans Feature
+
+      async function fetchAndDisplayMyPlans() {
+          const myPlansGrid = document.getElementById("my-plans-grid");
+          const oldCoursesGrid = document.getElementById("old-courses-grid");
+
+          myPlansGrid.innerHTML = `<div class="col-span-full text-center animate-pulse p-6 content-card">Loading course plans...</div>`;
+          oldCoursesGrid.innerHTML = `<div class="col-span-full text-center animate-pulse p-6 content-card">Loading old view courses...</div>`;
+
+          try {
+              const response = await fetch(`${WORKER_URL}?view=my_plan_courses`);
+              if (!response.ok) throw new Error(`API call failed: ${response.status}`);
+
+              // The worker now returns an object with both lists
+              const data = await response.json();
+              const plan_list = data.plan_list || [];
+              const course_list = data.course_list || [];
+
+              // Render the "My Course Plans" section
+              myPlansGrid.innerHTML = "";
+              if (!plan_list.length) {
+                  myPlansGrid.innerHTML = `<div class="col-span-full text-center text-yellow-400 p-6 content-card">[!] No course plans found.</div>`;
+              } else {
+                  plan_list.forEach((plan) => {
+                      // This card is a placeholder for a future details view if needed
+                      myPlansGrid.insertAdjacentHTML(
+                          "beforeend",
+                          // MODIFICATION: Added plan-card class and data attributes
+                          `<div class="plan-card p-4 sm:p-6 rounded-md border border-purple-700/50 bg-black hover:border-purple-500/80 cursor-pointer content-card"
+                              data-plan-id="${plan.id}" data-plan-title="${plan.title}">
+                            <h3 class="text-lg font-bold">${plan.title}</h3>
+                            <p class="text-xs text-purple-300 mt-2">Validity: ${plan.validity}</p>
+                          </div>`
+                      );
+                  });
+              }
+
+              // Render the "Courses (Old View)" section
+              oldCoursesGrid.innerHTML = "";
+              if (!course_list.length) {
+                  oldCoursesGrid.innerHTML = `<div class="col-span-full text-center text-yellow-400 p-6 content-card">[!] No old view courses found.</div>`;
+              } else {
+                  course_list.forEach((course) => {
+                      // We use the same 'course-card' class to reuse the existing click handler
+                      oldCoursesGrid.insertAdjacentHTML(
+                          "beforeend",
+                          `<div class="course-card p-4 sm:p-6 rounded-md border border-green-700/50 bg-black hover:border-green-500/80 cursor-pointer content-card" 
+                              data-course-id="${course.id}" 
+                              data-course-title="${course.title}" 
+                              data-course-type="${course.course_type}">
+                            <h3 class="text-lg font-bold">${course.title}</h3>
+                            <p class="text-xs text-gray-400 mt-2">Subject: ${course.subject_title}</p>
+                          </div>`
+                      );
+                  });
+              }
+
+          } catch (error) {
+              console.error("My Plans/Courses Loading Error:", error);
+              myPlansGrid.innerHTML = `<div class="col-span-full text-center text-red-500 p-6 content-card">[ERROR] Could not retrieve course plans.</div>`;
+              oldCoursesGrid.innerHTML = `<div class="col-span-full text-center text-red-500 p-6 content-card">[ERROR] Could not retrieve old courses.</div>`;
+          }
+      }
+
+      async function fetchAndDisplayPlanChildCourses(planId, planTitle) {
+          navigateTo('plan_details', { currentPlanTitle: planTitle }); // <-- This line fixes the breadcrumbs
+          headers.plan.innerText = planTitle;
+          const childCoursesGrid = document.getElementById("plan-child-courses-grid");
+          childCoursesGrid.innerHTML = `<div class="col-span-full text-center animate-pulse p-6 content-card">Loading courses in plan...</div>`;
+          try {
+              const response = await fetch(`${WORKER_URL}?view=plan_child_courses&plan_id=${planId}`);
+              if (!response.ok) throw new Error("API call failed");
+              const childCourses = await response.json();
+              childCoursesGrid.innerHTML = "";
+              if (!childCourses.length) {
+                  childCoursesGrid.innerHTML = `<div class="col-span-full text-center text-yellow-400 p-6 content-card">[!] No courses found in this plan.</div>`;
+                  return;
+              }
+              childCourses.forEach((course) => {
+                  childCoursesGrid.insertAdjacentHTML("beforeend", `<div class="course-card p-4 sm:p-6 rounded-md border border-green-700/50 bg-black hover:border-green-500/80 cursor-pointer content-card" data-course-id="${course.id}" data-course-title="${course.title}" data-course-type="${course.course_type}"><h3 class="text-lg font-bold">${course.title}</h3></div>`);
+              });
+          } catch (error) {
+              console.error("Plan Child Courses Loading Error:", error);
+              childCoursesGrid.innerHTML = `<div class="col-span-full text-center text-red-500 p-6 content-card">[ERROR] Could not retrieve courses for this plan.</div>`;
+          }
+      }
+
+      // Handle clicks on dynamically created course cards in various sections
+      function handleCourseClick(card) {
+          if (!card) return;
+
+          const courseType = card.dataset.courseType;
+          const courseId = card.dataset.courseId;
+          const courseTitle = card.dataset.courseTitle;
+
+          if (courseType === "3") { // QBank
+              window.location.href = `qbank.html?course_id=${courseId}&title=${encodeURIComponent(courseTitle)}`;
+          } else if (courseType === "2") { // Test Series
+              window.location.href = `testseries.html?course_id=${courseId}&title=${encodeURIComponent(courseTitle)}`;
+          } else { // All other types (videos, etc.)
+              fetchAndDisplaySubjects(courseId, courseTitle, courseType);
+          }
+      }
+      
+      // Video player is now initialized automatically when DOM is ready
+
+      // Bookmark toggle function
+      window.toggleBookmark = function(contentId, title, metadata = {}) {
+        const button = document.querySelector(`[data-content-id="${contentId}"]`);
+        if (UserExperienceManager.BookmarkManager.isBookmarked(contentId)) {
+          UserExperienceManager.BookmarkManager.removeBookmark(contentId);
+          if (button) button.textContent = '☆ Bookmark';
+          if (button) button.classList.remove('bg-yellow-600/70');
+          showNotification('Bookmark removed', 'info');
+        } else {
+          UserExperienceManager.BookmarkManager.addBookmark(contentId, title, metadata);
+          if (button) button.textContent = '★ Bookmarked';
+          if (button) button.classList.add('bg-yellow-600/70');
+          showNotification('Bookmark added', 'success');
+        }
+      };
+
+      // Show user progress summary
+      function showProgressSummary() {
+        const progress = UserExperienceManager.ProgressTracker.getProgressSummary();
+        const achievements = UserExperienceManager.AchievementManager.getAllAchievements().filter(a => a.unlocked);
+
+        showNotification(
+          `Progress: ${progress.completedItems}/${progress.totalItems} completed (${progress.completionRate.toFixed(1)}%) | ${achievements.length} achievements unlocked`,
+          'info',
+          8000
+        );
+      }
+
+      // Add progress summary to mobile menu
+      const mobileProfileSection = document.getElementById('mobile-profile-section');
+      if (mobileProfileSection) {
+        const progressSummary = document.createElement('div');
+        progressSummary.className = 'bg-blue-900/10 p-3 rounded-lg border border-blue-900/20 mt-2';
+        progressSummary.innerHTML = `
+          <button onclick="showProgressSummary()" class="w-full text-left">
+            <p class="text-blue-500 text-xs mb-1">> Learning Progress</p>
+            <p class="text-blue-300 text-sm">Tap to view progress</p>
+          </button>
+        `;
+        mobileProfileSection.appendChild(progressSummary);
+      }
+
+      // Load build number from worker API
+      async function loadBuildNumber() {
+        const buildNumberElement = document.getElementById("build-number");
+        const mobileBuildNumberElement = document.getElementById("mobile-build-number");
+
+        try {
+          const response = await fetch(`${WORKER_URL}?action=get_build`);
+          if (response.ok) {
+            const buildData = await response.json();
+            const buildNo = buildData.build_no || buildData.working_build_no || "521";
+            const buildText = `Build: ${buildNo}`;
+
+            if (buildNumberElement) buildNumberElement.textContent = buildText;
+            if (mobileBuildNumberElement) mobileBuildNumberElement.textContent = buildText;
+          } else {
+            const fallbackText = "Build: 521";
+            if (buildNumberElement) buildNumberElement.textContent = fallbackText;
+            if (mobileBuildNumberElement) mobileBuildNumberElement.textContent = fallbackText;
+          }
+        } catch (error) {
+          console.log("Build info not available, using default");
+          const fallbackText = "Build: 521";
+          if (buildNumberElement) buildNumberElement.textContent = fallbackText;
+          if (mobileBuildNumberElement) mobileBuildNumberElement.textContent = fallbackText;
+        }
+      }
+
+      // Load recent updates/announcements
+      loadRecentUpdates();
+
+      // Load build number from worker API
+      loadBuildNumber();
+
+      // Load recent updates
+      async function loadRecentUpdates() {
+        const updatesContainer = document.getElementById("updates-container");
+        if (!updatesContainer) return;
+
+        try {
+          const response = await fetch(`${WORKER_URL}?action=get_announcements`);
+          if (response.ok) {
+            const data = await response.json();
+            const announcements = data.announcements || [];
+
+            if (announcements.length === 0) {
+              updatesContainer.innerHTML = `
+                <div class="text-center py-8">
+                  <div class="text-gray-400 text-sm">No recent updates</div>
+                  <div class="text-gray-500 text-xs mt-2">Check back later for announcements and updates</div>
+                </div>
+              `;
+              return;
+            }
+
+            // Add system update
+            const systemUpdate = {
+              id: 'system-update',
+              title: 'System Updated to v2.4.0',
+              content: 'Enhanced user experience with improved performance, new announcement system, and better online status tracking.',
+              type: 'success',
+              priority: 'normal',
+              created_at: new Date().toISOString(),
+              is_system: true
+            };
+
+            const allUpdates = [systemUpdate, ...announcements.slice(0, 3)]; // Show system update + up to 3 announcements
+
+            updatesContainer.innerHTML = allUpdates.map(update => {
+              const typeColors = {
+                info: 'bg-blue-600/20 text-blue-300 border-blue-600/30',
+                success: 'bg-green-600/20 text-green-300 border-green-600/30',
+                warning: 'bg-yellow-600/20 text-yellow-300 border-yellow-600/30',
+                error: 'bg-red-600/20 text-red-300 border-red-600/30'
+              };
+
+              const priorityColors = {
+                low: 'text-gray-400',
+                normal: 'text-blue-400',
+                high: 'text-yellow-400',
+                urgent: 'text-red-400'
+              };
+
+              const colorClass = typeColors[update.type] || typeColors.info;
+              const priorityColor = priorityColors[update.priority] || priorityColors.normal;
+              const isSystem = update.is_system;
+
+              return `
+                <div class="bg-gray-900/30 p-4 rounded-lg border border-gray-700/50 ${isSystem ? 'border-l-4 border-l-green-500' : ''}">
+                  <div class="flex justify-between items-start mb-2">
+                    <h4 class="text-sm font-bold text-green-300">${update.title}</h4>
+                    ${isSystem ? '<span class="text-xs bg-green-800/50 text-green-300 px-2 py-1 rounded">SYSTEM</span>' : ''}
+                  </div>
+                  <p class="text-sm text-gray-300 mb-3">${update.content}</p>
+                  <div class="flex justify-between items-center text-xs">
+                    <span class="px-2 py-1 rounded-full ${colorClass}">${update.type.toUpperCase()}</span>
+                    <span class="${priorityColor}">${update.priority.toUpperCase()}</span>
+                    <span class="text-gray-500">${new Date(update.created_at).toLocaleDateString()}</span>
+                  </div>
+                </div>
+              `;
+            }).join("");
+          } else {
+            updatesContainer.innerHTML = `
+              <div class="text-center py-8">
+                <div class="text-red-400 text-sm">Failed to load updates</div>
+              </div>
+            `;
+          }
+        } catch (error) {
+          updatesContainer.innerHTML = `
+            <div class="text-center py-8">
+              <div class="text-red-400 text-sm">Error loading updates</div>
+            </div>
+          `;
+        }
+      }
+
+      // Final initialization and error handling
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('DAMS Content Suite v2.4.1 initialized successfully');
+
+        // Initialize systems after the DOM is ready
+        initializeMobileGestures();
+
+        // Fetch the initial content
+        fetchAndDisplayCategories();
+        fetchAndDisplayMyPlans();
+
+        console.log('All systems initialized');
+      });
+
+      // Global error handler for any remaining issues
+      window.addEventListener('error', function(event) {
+        console.error('Global error caught:', event.error, event.message);
+
+        // Prevent page crashes
+        if (event.message.includes('Script error') || event.message.includes('Non-Error promise rejection')) {
+          event.preventDefault();
+          console.warn('Prevented page crash from script error');
+        }
+      });
+
+      // Handle unhandled promise rejections
+      window.addEventListener('unhandledrejection', function(event) {
+        console.error('Unhandled promise rejection:', event.reason);
+
+        // Prevent page crashes
+        event.preventDefault();
+        console.warn('Prevented page crash from unhandled promise rejection');
+      });
+    </script>
+  </body>
+</html>
