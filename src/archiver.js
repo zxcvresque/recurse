@@ -421,11 +421,57 @@ export class Archiver extends EventEmitter {
     async capturePage(url, depth) {
         console.log(`  Capturing: ${url} (depth: ${depth})`);
 
-        // Navigate to page
-        await this.page.goto(url, { waitUntil: 'networkidle' });
+        // Inject route change interceptor BEFORE navigation
+        await this.page.addInitScript(() => {
+            window.__recurseRoutes = new Set();
+            const originalPushState = history.pushState.bind(history);
+            const originalReplaceState = history.replaceState.bind(history);
 
-        // Wait extra time for React/JS components to fully render (Sandpack, code editors, etc.)
-        await this.page.waitForTimeout(2000);
+            history.pushState = function (...args) {
+                const url = args[2];
+                if (url) window.__recurseRoutes.add(new URL(url, location.origin).href);
+                return originalPushState(...args);
+            };
+
+            history.replaceState = function (...args) {
+                const url = args[2];
+                if (url) window.__recurseRoutes.add(new URL(url, location.origin).href);
+                return originalReplaceState(...args);
+            };
+
+            window.addEventListener('popstate', () => {
+                window.__recurseRoutes.add(location.href);
+            });
+
+            // Also catch click events that might trigger navigation
+            document.addEventListener('click', (e) => {
+                const link = e.target.closest('a[href]');
+                if (link && link.href && link.href.startsWith(location.origin)) {
+                    window.__recurseRoutes.add(link.href);
+                }
+            }, true);
+        });
+
+        // Navigate to page with configurable wait strategy
+        await this.page.goto(url, { waitUntil: this.readyStrategy || 'domcontentloaded' });
+
+        // Brief wait for JS to settle (reduced from 2s for speed)
+        await this.page.waitForTimeout(300);
+
+        // Collect any routes discovered via pushState/replaceState
+        const discoveredRoutes = await this.page.evaluate(() => {
+            return Array.from(window.__recurseRoutes || []);
+        });
+
+        // Add discovered SPA routes to queue (filter out RECURSE_ONLINE markers)
+        for (const route of discoveredRoutes) {
+            if (route.includes('RECURSE_ONLINE')) continue; // Skip dynamic content markers
+            const normalized = this.normalizeUrl(route);
+            if (!this.visited.has(normalized) && this.shouldCrawl(route)) {
+                this.queue.push({ url: route, depth: depth + 1 });
+                this.emit('status', { message: `SPA route discovered: ${route}` });
+            }
+        }
 
         // Get page content
         const title = await this.page.title();
@@ -606,11 +652,11 @@ export class Archiver extends EventEmitter {
             return document.documentElement.outerHTML;
         }, url);
 
-        // Extract links for crawling
+        // Extract links for crawling (filter out RECURSE_ONLINE markers)
         const links = await this.page.evaluate(() => {
             return Array.from(document.querySelectorAll('a[href]'))
                 .map(a => a.href)
-                .filter(href => href.startsWith('http'));
+                .filter(href => href.startsWith('http') && !href.includes('RECURSE_ONLINE'));
         });
 
         // Store page
@@ -629,9 +675,10 @@ export class Archiver extends EventEmitter {
             await this.downloadAssets(url);
         }
 
-        // Add discovered links to queue
+        // Add discovered links to queue (skip RECURSE_ONLINE markers)
         if (depth < this.maxDepth) {
             for (const link of links) {
+                if (link.includes('RECURSE_ONLINE')) continue; // Skip dynamic content markers
                 const normalized = this.normalizeUrl(link);
                 if (this.shouldCrawl(normalized)) {
                     this.queue.push({ url: link, depth: depth + 1 });
@@ -829,18 +876,25 @@ export class Archiver extends EventEmitter {
             } catch (e) { }
         }
 
-        const renderTree = (node, indent = 0) => {
+        const renderTree = (node) => {
             let html = '';
             for (const [key, val] of Object.entries(node)) {
                 if (key === '_pages') continue;
-                const hasChildren = Object.keys(val).filter(k => k !== '_pages').length > 0;
+                const hasSubfolders = Object.keys(val).filter(k => k !== '_pages').length > 0;
                 const pages = val._pages || [];
-                html += `<div class="folder" style="margin-left:${indent * 16}px">
-                    <span class="toggle" onclick="this.parentElement.classList.toggle('open')">▶</span>
-                    <span class="name">/${key}</span>
-                    ${pages.map(p => `<a href="${p.status === 'ok' ? 'pages/' + this.urlToPath(p.url) : '#'}" class="${p.status}" title="${p.title || p.reason || ''}">${p.status === 'ok' ? '✓' : '✗'}</a>`).join('')}
+
+                html += `<div class="folder">
+                    <div class="item">
+                        <span class="toggle ${hasSubfolders ? 'has-children' : 'empty'}" onclick="toggleFolder(this)">▶</span>
+                        <span class="name">/${key}</span>
+                        ${pages.map(p => {
+                    const link = p.status === 'ok' ? 'pages/' + this.urlToPath(p.url) : '#';
+                    return `<a href="${link}" class="status ${p.status}" title="${p.title || p.reason || ''}">${p.status === 'ok' ? '✓' : '✗'}</a>`;
+                }).join('')}
+                        ${hasSubfolders ? `<button class="expand-btn" onclick="expandSubtree(this)">Expand</button>` : ''}
+                    </div>
+                    ${hasSubfolders ? `<div class="children">${renderTree(val)}</div>` : ''}
                 </div>`;
-                html += `<div class="children">${renderTree(val, indent + 1)}</div>`;
             }
             return html;
         };
@@ -848,22 +902,50 @@ export class Archiver extends EventEmitter {
         return `<!DOCTYPE html>
 <html><head><meta charset="UTF-8"><title>Sitemap - Re/curse</title>
 <style>
-body{font-family:system-ui,sans-serif;background:#0a0a0f;color:#e0e0e5;padding:30px;margin:0}
-h1{color:#4ade80;font-size:24px;margin-bottom:20px}
-.stats{color:#888;margin-bottom:24px}
-.folder{padding:6px 0;cursor:pointer}
-.folder .toggle{color:#666;margin-right:8px;font-size:12px;transition:transform .2s}
-.folder.open>.toggle{transform:rotate(90deg)}
-.folder .name{color:#60a5fa}
-.children{display:none;border-left:1px solid #333;margin-left:8px}
-.folder.open+.children{display:block}
-a{margin-left:8px;text-decoration:none;font-size:12px}
-a.ok{color:#4ade80}
-a.fail{color:#f87171}
+body{font-family:system-ui,-apple-system,sans-serif;background:#0a0a0f;color:#e0e0e5;padding:30px;margin:0;line-height:1.5}
+h1{color:#4ade80;font-size:24px;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.stats{color:#888;margin-bottom:24px;font-size:14px}
+.controls{margin-bottom:20px;display:flex;gap:12px}
+.controls button{background:#1e293b;border:1px solid #334155;color:#e0e0e5;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;transition:all .2s}
+.controls button:hover{background:#334155;border-color:#4ade80}
+.item{padding:4px 0;display:flex;align-items:center;gap:6px;position:relative}
+.item:hover .expand-btn{opacity:1}
+.toggle{color:#666;width:16px;text-align:center;font-size:11px;cursor:pointer;transition:transform .2s;flex-shrink:0}
+.toggle.has-children{color:#4ade80}
+.toggle.empty{visibility:hidden}
+.folder.open>.item>.toggle{transform:rotate(90deg)}
+.name{color:#60a5fa}
+.children{display:none;margin-left:20px;border-left:1px solid #333;padding-left:12px}
+.folder.open>.children{display:block}
+.status{margin-left:6px;text-decoration:none;font-size:12px}
+.status.ok{color:#4ade80}
+.status.fail{color:#f87171}
+.expand-btn{opacity:0;background:#4ade80;color:#0a0a0f;border:none;padding:2px 8px;border-radius:4px;font-size:10px;cursor:pointer;margin-left:8px;transition:opacity .2s}
+.expand-btn:hover{background:#22c55e}
 </style></head><body>
 <h1>📁 Sitemap</h1>
 <div class="stats">Total: ${report.summary.total} | Success: ${report.summary.successful} | Failed: ${report.summary.failed}</div>
+<div class="controls">
+    <button onclick="expandAll()">▼ Expand All</button>
+    <button onclick="collapseAll()">▶ Collapse All</button>
+</div>
 <div class="tree">${renderTree(tree)}</div>
+<script>
+function toggleFolder(el) {
+    el.closest('.folder').classList.toggle('open');
+}
+function expandSubtree(btn) {
+    const folder = btn.closest('.folder');
+    folder.classList.add('open');
+    folder.querySelectorAll('.folder').forEach(f => f.classList.add('open'));
+}
+function expandAll() {
+    document.querySelectorAll('.folder').forEach(f => f.classList.add('open'));
+}
+function collapseAll() {
+    document.querySelectorAll('.folder').forEach(f => f.classList.remove('open'));
+}
+</script>
 </body></html>`;
     }
 
@@ -944,6 +1026,8 @@ a.fail{color:#f87171}
             // Replace only if NOT preceded by data-recurse-dynamic
             const dynamicSafeRegex = new RegExp(`href="(${pageUrlEscaped})"(?![^<]*data-recurse-dynamic)`, 'g');
             result = result.replace(dynamicSafeRegex, (match, url) => {
+                // Skip if this is a RECURSE_ONLINE link (will be converted later)
+                if (match.includes('RECURSE_ONLINE')) return match;
                 // Check if this is inside a data-recurse-dynamic element
                 // Simple heuristic: if the href contains #, it might be a dynamic link
                 return `href="${relativePagePath}"`;
@@ -977,6 +1061,8 @@ a.fail{color:#f87171}
         try {
             const originRegex = new RegExp(`href=["']${this.origin}(/[^"']*)?["']`, 'g');
             result = result.replace(originRegex, (match, path, offset) => {
+                // Skip RECURSE_ONLINE links
+                if (match.includes('RECURSE_ONLINE')) return match;
                 // Check if this is a data-recurse-dynamic link
                 const contextBefore = result.substring(Math.max(0, offset - 100), offset);
                 if (contextBefore.includes('data-recurse-dynamic')) {
