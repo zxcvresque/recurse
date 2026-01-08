@@ -24,10 +24,22 @@ export class Archiver extends EventEmitter {
         this.smartDiscovery = config.smartDiscovery ?? true;
         this.useBrowserSession = config.useBrowserSession ?? false;
         this.interactiveLogin = config.interactiveLogin ?? false;
-        this.browserType = config.browserType ?? 'chromium'; // 'chromium', 'chrome', 'brave'
-        this.cookies = config.cookies ?? []; // Cookie import support
+        this.browserType = config.browserType ?? 'chromium';
+        this.cookies = config.cookies ?? [];
 
-        this.isLoggedIn = false; // Flag for interactive login flow
+        // New easy features
+        this.readyStrategy = config.readyStrategy ?? 'networkidle'; // 'domcontentloaded', 'networkidle', 'load'
+        this.waitSelector = config.waitSelector ?? null; // CSS selector to wait for
+        this.autoScroll = config.autoScroll ?? false;
+        this.maxScrolls = config.maxScrolls ?? 10;
+        this.retries = config.retries ?? 3;
+        this.backoffMultiplier = config.backoffMultiplier ?? 2;
+        this.safeMode = config.safeMode ?? true; // Block dangerous URLs by default
+        this.maxFileSizeMB = config.maxFileSizeMB ?? 50;
+        this.saveSessionPath = config.saveSessionPath ?? null;
+
+        this.isLoggedIn = false;
+        this.failures = []; // Track failures for reporting
 
         this.visited = new Set();
         this.queue = [];
