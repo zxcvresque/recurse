@@ -1,5 +1,5 @@
 /**
- * ReCURSE - Main Archiver
+ * Re/curse - Main Archiver
  * Playwright-based website crawler and archiver
  */
 
@@ -7,6 +7,7 @@ import { chromium } from 'playwright';
 import { EventEmitter } from 'events';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import * as os from 'os';
 import JSZip from 'jszip';
 
 export class Archiver extends EventEmitter {
@@ -19,9 +20,14 @@ export class Archiver extends EventEmitter {
         this.includeAssets = config.includeAssets ?? { images: true, css: true, js: true };
         this.delay = config.delay ?? 500;
         this.timeout = config.timeout ?? 30000;
-        this.timeout = config.timeout ?? 30000;
         this.headless = config.headless ?? true;
         this.smartDiscovery = config.smartDiscovery ?? true;
+        this.useBrowserSession = config.useBrowserSession ?? false;
+        this.interactiveLogin = config.interactiveLogin ?? false;
+        this.browserType = config.browserType ?? 'chromium'; // 'chromium', 'chrome', 'brave'
+        this.cookies = config.cookies ?? []; // Cookie import support
+
+        this.isLoggedIn = false; // Flag for interactive login flow
 
         this.visited = new Set();
         this.queue = [];
@@ -40,12 +46,36 @@ export class Archiver extends EventEmitter {
         const startTime = Date.now();
 
         // Launch browser
-        this.browser = await chromium.launch({ headless: this.headless });
-        this.context = await this.browser.newContext({
-            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ReCURSE/1.0 Website Archiver'
-        });
-        this.page = await this.context.newPage();
-        this.page.setDefaultTimeout(this.timeout);
+        if (this.interactiveLogin) {
+            await this.launchInteractive();
+        } else if (this.useBrowserSession) {
+            await this.launchWithPersistentContext();
+        } else {
+            this.browser = await chromium.launch({ headless: this.headless });
+            this.context = await this.browser.newContext({
+                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Re/curse/1.0 Website Archiver'
+            });
+            this.page = await this.context.newPage();
+            this.page.setDefaultTimeout(this.timeout);
+        }
+
+        // Wait for user to finish login if in interactive mode
+        if (this.interactiveLogin) {
+            this.emit('status', { message: 'Waiting for manual login in the browser window...' });
+            this.emit('waiting-for-login', { url: this.startUrl });
+
+            // Wait until resume() is called
+            while (!this.isLoggedIn) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            this.emit('status', { message: 'Login confirmed. Starting archive...' });
+        }
+
+        // Inject cookies if provided
+        if (this.cookies && this.cookies.length > 0) {
+            await this.context.addCookies(this.cookies);
+            this.emit('status', { message: `Injected ${this.cookies.length} cookies` });
+        }
 
         try {
             // Start crawling
@@ -89,10 +119,15 @@ export class Archiver extends EventEmitter {
 
         this.browser = await chromium.launch({ headless: this.headless });
         this.context = await this.browser.newContext({
-            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ReCURSE/1.0 Website Archiver'
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Re/curse/1.0 Website Archiver'
         });
         this.page = await this.context.newPage();
         this.page.setDefaultTimeout(this.timeout);
+
+        // Inject cookies if provided
+        if (this.cookies && this.cookies.length > 0) {
+            await this.context.addCookies(this.cookies);
+        }
 
         try {
             if (this.smartDiscovery) {
@@ -294,7 +329,7 @@ export class Archiver extends EventEmitter {
 
         this.browser = await chromium.launch({ headless: this.headless });
         this.context = await this.browser.newContext({
-            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ReCURSE/1.0 Website Archiver'
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Re/curse/1.0 Website Archiver'
         });
         this.page = await this.context.newPage();
         this.page.setDefaultTimeout(this.timeout);
@@ -370,13 +405,143 @@ export class Archiver extends EventEmitter {
         // Navigate to page
         await this.page.goto(url, { waitUntil: 'networkidle' });
 
+        // Wait extra time for React/JS components to fully render (Sandpack, code editors, etc.)
+        await this.page.waitForTimeout(2000);
+
         // Get page content
         const title = await this.page.title();
 
         // Capture page with inline CSS for perfect offline styling
-        const html = await this.page.evaluate(() => {
+        const html = await this.page.evaluate((pageUrl) => {
+            // --- DYNAMIC CONTENT DETECTION & WRAPPING ---
+            // Selectors for known dynamic/interactive components
+            const dynamicSelectors = [
+                '.sandpack',
+                '[data-sandpack]',
+                '.sandpack--codeblock',
+                '[class*="sandpack"]',
+                '.CodeMirror',
+                '.monaco-editor',
+                '[data-code-block]',
+                'iframe[src*="codesandbox"]',
+                'iframe[src*="stackblitz"]',
+                'iframe[src*="codepen"]'
+            ];
+
+            // Helper function to wrap dynamic content
+            const wrapDynamicElement = (el) => {
+                // Avoid double-wrapping
+                if (el.closest('[data-recurse-dynamic]')) return;
+                if (el.hasAttribute('data-recurse-dynamic')) return;
+
+                // Find the nearest heading with an ID for anchor linking
+                let anchor = '';
+                let parent = el.parentElement;
+                while (parent) {
+                    const heading = parent.querySelector('h1[id], h2[id], h3[id], h4[id], h5[id]');
+                    if (heading) {
+                        anchor = '#' + heading.id;
+                        break;
+                    }
+                    parent = parent.parentElement;
+                }
+
+                // Create wrapper
+                const wrapper = document.createElement('a');
+                wrapper.setAttribute('data-recurse-dynamic', 'true');
+                // Use special prefix that will survive link rewriting and be converted back later
+                const onlineUrl = (pageUrl + anchor).replace(/^https?:\/\//, 'RECURSE_ONLINE://');
+                wrapper.setAttribute('href', onlineUrl);
+                wrapper.setAttribute('target', '_blank');
+                wrapper.setAttribute('rel', 'noopener noreferrer');
+                wrapper.setAttribute('title', '⚡ This was dynamic content. Click to view online.');
+                wrapper.style.cssText = 'display: block; position: relative; text-decoration: none; color: inherit; max-height: 500px; overflow: hidden;';
+
+                // Also constrain the child element's height
+                el.style.maxHeight = '500px';
+                el.style.overflow = 'hidden';
+
+                // Insert wrapper
+                el.parentNode.insertBefore(wrapper, el);
+                wrapper.appendChild(el);
+            };
+
+            // 1. Find and wrap known dynamic content by selectors
+            dynamicSelectors.forEach(selector => {
+                document.querySelectorAll(selector).forEach(wrapDynamicElement);
+            });
+
+            // 2. Heuristic: Find large blank areas (likely uninitialized dynamic content)
+            document.querySelectorAll('div, section, article').forEach(el => {
+                // Skip if already wrapped
+                if (el.closest('[data-recurse-dynamic]')) return;
+                if (el.hasAttribute('data-recurse-dynamic')) return;
+
+                const rect = el.getBoundingClientRect();
+                const text = (el.innerText || '').trim();
+                const hasImages = el.querySelectorAll('img').length > 0;
+                const hasVideo = el.querySelectorAll('video, iframe').length > 0;
+
+                // Heuristic: Large area (>1000px tall) with very little text and no media
+                // This catches uninitialized widgets that render as blank boxes
+                if (rect.height > 1000 && text.length < 50 && !hasImages && !hasVideo) {
+                    wrapDynamicElement(el);
+                }
+            });
+
+            // --- INJECT CSS FOR DYNAMIC CONTENT OVERLAY ---
+            const dynamicCss = `
+                [data-recurse-dynamic] {
+                    position: relative;
+                    cursor: pointer;
+                    max-height: 500px !important;
+                    overflow: hidden !important;
+                }
+                [data-recurse-dynamic] > * {
+                    max-height: 500px !important;
+                    overflow: hidden !important;
+                }
+                [data-recurse-dynamic]::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: transparent;
+                    z-index: 10;
+                    transition: background 0.2s;
+                }
+                [data-recurse-dynamic]:hover::before {
+                    background: rgba(99, 102, 241, 0.05);
+                }
+                [data-recurse-dynamic]::after {
+                    content: '⚡ Dynamic content - Click to view online';
+                    position: absolute;
+                    bottom: 8px;
+                    right: 8px;
+                    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+                    color: #fff;
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    font-size: 11px;
+                    font-weight: 500;
+                    font-family: system-ui, -apple-system, sans-serif;
+                    opacity: 0;
+                    transform: translateY(4px);
+                    transition: opacity 0.2s, transform 0.2s;
+                    pointer-events: none;
+                    z-index: 20;
+                    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+                }
+                [data-recurse-dynamic]:hover::after {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            `;
+
             // Inline all CSS from stylesheets
-            const cssTexts = [];
+            const cssTexts = [dynamicCss];
             for (const sheet of document.styleSheets) {
                 try {
                     let css = '';
@@ -420,7 +585,7 @@ export class Archiver extends EventEmitter {
             });
 
             return document.documentElement.outerHTML;
-        });
+        }, url);
 
         // Extract links for crawling
         const links = await this.page.evaluate(() => {
@@ -536,8 +701,12 @@ export class Archiver extends EventEmitter {
             zip.file('index.html', indexHtml);
         }
 
-        // Generate ZIP
-        const buffer = await zip.generateAsync({ type: 'nodebuffer', compression: 'DEFLATE' });
+        // Generate ZIP with optimized compression (faster)
+        const buffer = await zip.generateAsync({
+            type: 'nodebuffer',
+            compression: 'DEFLATE',
+            compressionOptions: { level: 1 } // Faster compression (1-9, lower = faster)
+        });
         // Create parent directory if needed
         await fs.mkdir(path.dirname(this.outputPath), { recursive: true });
         await fs.writeFile(this.outputPath, buffer);
@@ -581,17 +750,94 @@ export class Archiver extends EventEmitter {
     rewriteLinks(html, pageUrl) {
         let result = html;
 
-        // Rewrite asset URLs to local paths
+        // Calculate nesting depth to get back to root
+        // pages are stored in pages/ subfolder
+        const localPath = this.urlToPath(pageUrl);
+        const segments = localPath.split('/').filter(s => s && s !== '.');
+        const depth = segments.length > 1 ? segments.length - 1 : 0;
+
+        // Prefix to get from the current page to the archive root
+        // Since pages are in "pages/", we always need at least one "../"
+        const rootPrefix = '../'.repeat(depth + 1);
+
+        // 1. Rewrite asset URLs (but preserve dynamic content links)
         for (const [url, asset] of this.assets) {
-            const localPath = '../' + this.getAssetPath(url, asset.type);
-            result = result.split(url).join(localPath);
+            const assetPath = this.getAssetPath(url, asset.type);
+            const relativeAssetPath = rootPrefix + assetPath;
+
+            // Escape URL for split/join to avoid regex issues
+            result = result.split(url).join(relativeAssetPath);
+
+            // Also handle if the URL appears as a root-relative path in the source
+            try {
+                const u = new URL(url);
+                const rootRelative = u.pathname + u.search;
+                if (rootRelative !== url) {
+                    result = result.split(`"${rootRelative}"`).join(`"${relativeAssetPath}"`);
+                    result = result.split(`'${rootRelative}'`).join(`'${relativeAssetPath}'`);
+                }
+            } catch (e) { }
         }
 
-        // Rewrite page links
+        // 2. Rewrite page links (but NOT those inside data-recurse-dynamic wrappers)
         for (const page of this.pages) {
-            const localPath = this.urlToPath(page.url);
-            result = result.split(`href="${page.url}"`).join(`href="${localPath}"`);
+            const targetLocalPath = this.urlToPath(page.url);
+            const relativePagePath = rootPrefix + 'pages/' + targetLocalPath;
+
+            // Match absolute URLs but NOT in data-recurse-dynamic links
+            // We use a regex that ensures it's not within a data-recurse-dynamic href
+            const pageUrlEscaped = page.url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+            // Replace only if NOT preceded by data-recurse-dynamic
+            const dynamicSafeRegex = new RegExp(`href="(${pageUrlEscaped})"(?![^<]*data-recurse-dynamic)`, 'g');
+            result = result.replace(dynamicSafeRegex, (match, url) => {
+                // Check if this is inside a data-recurse-dynamic element
+                // Simple heuristic: if the href contains #, it might be a dynamic link
+                return `href="${relativePagePath}"`;
+            });
+
+            // Simple replacement for quotes
+            result = result.split(`href='${page.url}'`).join(`href='${relativePagePath}'`);
+
+            // Handle root-relative links (e.g., href="/learn")
+            try {
+                const u = new URL(page.url);
+                const rootRelative = u.pathname;
+                if (rootRelative !== page.url) {
+                    // Match "/pathname" but not "//domain.com"
+                    const escaped = rootRelative.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    const rrRegex = new RegExp(`href=["']${escaped}/?["']`, 'g');
+                    result = result.replace(rrRegex, `href="${relativePagePath}"`);
+                }
+            } catch (e) { }
+
+            // Handle normalized versions
+            const normalizedUrl = this.normalizeUrl(page.url);
+            if (normalizedUrl !== page.url) {
+                result = result.split(`href="${normalizedUrl}"`).join(`href="${relativePagePath}"`);
+                result = result.split(`href='${normalizedUrl}'`).join(`href='${relativePagePath}'`);
+            }
         }
+
+        // 3. Fallback: Catch remaining same-origin absolute links
+        // BUT preserve links inside data-recurse-dynamic elements
+        try {
+            const originRegex = new RegExp(`href=["']${this.origin}(/[^"']*)?["']`, 'g');
+            result = result.replace(originRegex, (match, path, offset) => {
+                // Check if this is a data-recurse-dynamic link
+                const contextBefore = result.substring(Math.max(0, offset - 100), offset);
+                if (contextBefore.includes('data-recurse-dynamic')) {
+                    return match; // Preserve original URL
+                }
+                if (!path || path === '/') return `href="${rootPrefix}index.html"`;
+                let cleanPath = path.replace(/^\//, '').replace(/\/$/, '');
+                if (!cleanPath.includes('.')) cleanPath += '.html';
+                return `href="${rootPrefix}pages/${cleanPath}"`;
+            });
+        } catch (e) { }
+
+        // 4. Convert RECURSE_ONLINE:// back to https:// (preserves dynamic content links)
+        result = result.split('RECURSE_ONLINE://').join('https://');
 
         return result;
     }
@@ -765,6 +1011,115 @@ export class Archiver extends EventEmitter {
             });
         } catch (e) {
             return [];
+        }
+    }
+    async launchWithPersistentContext() {
+        const userDataDir = this.getBrowserUserDataDir();
+        try {
+            const launchOptions = {
+                headless: false,
+                viewport: { width: 1920, height: 1080 }
+            };
+
+            if (this.browserType === 'chrome') {
+                launchOptions.channel = 'chrome';
+            } else if (this.browserType === 'brave') {
+                // Find brave executable
+                const bravePath = this.getBravePath();
+                if (bravePath) launchOptions.executablePath = bravePath;
+            }
+
+            this.context = await chromium.launchPersistentContext(userDataDir, {
+                ...launchOptions,
+                acceptDownloads: false,
+            });
+            this.page = await this.context.newPage();
+            this.page.setDefaultTimeout(this.timeout);
+            this.browser = this.context;
+        } catch (error) {
+            console.error('Failed to launch with persistent context:', error.message);
+            this.browser = await chromium.launch({ headless: this.headless });
+            this.context = await this.browser.newContext({
+                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Re/curse/1.0 Website Archiver'
+            });
+            this.page = await this.context.newPage();
+            this.page.setDefaultTimeout(this.timeout);
+        }
+    }
+
+    async launchInteractive() {
+        const launchOptions = {
+            headless: false,
+            viewport: { width: 1280, height: 800 }
+        };
+
+        if (this.browserType === 'chrome') {
+            launchOptions.channel = 'chrome';
+        } else if (this.browserType === 'brave') {
+            const bravePath = this.getBravePath();
+            if (bravePath) launchOptions.executablePath = bravePath;
+        }
+
+        this.browser = await chromium.launch(launchOptions);
+        this.context = await this.browser.newContext({
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Re/curse/1.0 Website Archiver'
+        });
+        this.page = await this.context.newPage();
+        this.page.setDefaultTimeout(this.timeout);
+
+        // Go to start URL immediately for login
+        await this.page.goto(this.startUrl);
+    }
+
+    // Signal that manual login is finished
+    confirmLogin() {
+        this.isLoggedIn = true;
+    }
+
+    getBrowserUserDataDir() {
+        if (this.browserType === 'brave') return this.getBraveUserDataDir();
+        return this.getChromeUserDataDir();
+    }
+
+    getBravePath() {
+        const platform = os.platform();
+        if (platform === 'win32') {
+            const possiblePaths = [
+                path.join(process.env['ProgramFiles'], 'BraveSoftware', 'Brave-Browser', 'Application', 'brave.exe'),
+                path.join(process.env['ProgramFiles(x86)'], 'BraveSoftware', 'Brave-Browser', 'Application', 'brave.exe'),
+                path.join(os.homedir(), 'AppData', 'Local', 'BraveSoftware', 'Brave-Browser', 'Application', 'brave.exe')
+            ];
+            for (const p of possiblePaths) {
+                try {
+                    // Check if exists
+                    return p;
+                } catch (e) { }
+            }
+        }
+        return null;
+    }
+
+    getChromeUserDataDir() {
+        const platform = os.platform();
+        const homeDir = os.homedir();
+        if (platform === 'win32') {
+            return path.join(homeDir, 'AppData', 'Local', 'Google', 'Chrome', 'User Data', 'Default');
+        } else if (platform === 'darwin') {
+            return path.join(homeDir, 'Library', 'Application Support', 'Google', 'Chrome', 'Default');
+        } else {
+            return path.join(homeDir, '.config', 'google-chrome', 'Default');
+        }
+    }
+
+    getBraveUserDataDir() {
+        const platform = os.platform();
+        const homeDir = os.homedir();
+        if (platform === 'win32') {
+            return path.join(homeDir, 'AppData', 'Local', 'BraveSoftware', 'Brave-Browser', 'User Data', 'Default');
+        } else if (platform === 'darwin') {
+            return path.join(homeDir, 'Library', 'Application Support', 'BraveSoftware', 'Brave-Browser', 'Default');
+        } else {
+            return path.join(homeDir, '.config', 'BraveSoftware', 'Brave-Browser', 'Default');
         }
     }
 }

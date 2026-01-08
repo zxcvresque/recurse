@@ -1,5 +1,5 @@
 /**
- * ReCURSE - ZIP Builder
+ * Re/curse - ZIP Builder
  * Generates downloadable ZIP archives from crawled content
  */
 
@@ -104,7 +104,7 @@ export class ZipBuilder {
     if (includeManifest) {
       const manifest = {
         version: '1.0.0',
-        generator: 'ReCURSE Website Archiver',
+        generator: 'Re/curse Website Archiver',
         createdAt: new Date().toISOString(),
         source: {
           url: crawl?.startUrl,
@@ -301,7 +301,7 @@ ${pageLinks}
 }
 
 function generateReadme(crawl, pageCount, assetCount) {
-  return `ReCURSE Website Archive
+  return `Re/curse Website Archive
 =======================
 
 Source URL: ${crawl?.startUrl || 'Unknown'}
@@ -327,7 +327,7 @@ Notes
 -----
 - External links will still point to the internet
 - Some dynamic features may not work offline
-- This archive was created with ReCURSE Website Archiver
+- This archive was created with Re/curse Website Archiver
 
 License
 -------

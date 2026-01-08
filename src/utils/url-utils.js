@@ -1,5 +1,5 @@
 /**
- * ReCURSE - URL Utilities
+ * Re/curse - URL Utilities
  * URL normalization, validation, and comparison functions
  */
 

@@ -1,5 +1,5 @@
 /**
- * ReCURSE - Hash Utilities
+ * Re/curse - Hash Utilities
  * SHA-256 hashing using Web Crypto API
  */
 

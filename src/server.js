@@ -1,5 +1,5 @@
 /**
- * ReCURSE - Web Server
+ * Re/curse - Web Server
  * Express server with Socket.IO for real-time progress
  */
 
@@ -8,6 +8,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import chalk from 'chalk';
 import { Archiver } from './archiver.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -33,7 +34,8 @@ app.post('/api/start', async (req, res) => {
         url, depth, pages,
         includeImages, includeCss, includeJs,
         includeFonts, includeVideo, includeAudio,
-        delay, timeout, sameDomain, smartDiscovery
+        delay, timeout, sameDomain, smartDiscovery,
+        useBrowserSession, cookies, interactiveLogin, browserType
     } = req.body;
 
     if (!url) {
@@ -60,15 +62,19 @@ app.post('/api/start', async (req, res) => {
                 images: includeImages !== false,
                 css: includeCss !== false,
                 js: includeJs !== false,
-                fonts: includeFonts === true,
-                video: includeVideo === true,
-                audio: includeAudio === true
+                fonts: includeFonts !== false,
+                video: includeVideo !== false,
+                audio: includeAudio !== false
             },
             delay: parseInt(delay) || 500,
             timeout: parseInt(timeout) || 30000,
             sameDomain: sameDomain !== false,
-            smartDiscovery: smartDiscovery !== false, // Default to true
-            headless: true
+            smartDiscovery: smartDiscovery !== false,
+            useBrowserSession: useBrowserSession === true,
+            interactiveLogin: interactiveLogin === true,
+            browserType: browserType || 'chromium',
+            headless: !interactiveLogin, // Must be visible for interactive login
+            cookies: cookies || []
         };
 
         currentArchiver = new Archiver(config);
@@ -87,6 +93,11 @@ app.post('/api/start', async (req, res) => {
                     totalBytes: currentStats.totalBytes
                 }
             });
+        });
+
+        // Forward waiting-for-login event to client
+        currentArchiver.on('waiting-for-login', (data) => {
+            io.emit('waiting-for-login', data);
         });
 
         currentArchiver.on('error', (err) => {
@@ -129,13 +140,22 @@ app.post('/api/stop', (req, res) => {
     res.json({ success: true });
 });
 
+app.post('/api/login-confirm', (req, res) => {
+    if (currentArchiver && typeof currentArchiver.confirmLogin === 'function') {
+        currentArchiver.confirmLogin();
+        res.json({ success: true });
+    } else {
+        res.status(400).json({ error: 'No active archiver in login mode' });
+    }
+});
+
 // Analyze mode - discover pages without downloading
 app.post('/api/analyze', async (req, res) => {
     if (currentArchiver) {
         return res.status(400).json({ error: 'Operation already in progress' });
     }
 
-    const { url, depth, pages, delay, timeout, sameDomain, smartDiscovery } = req.body;
+    const { url, depth, pages, delay, timeout, sameDomain, smartDiscovery, cookies } = req.body;
 
     if (!url) {
         return res.status(400).json({ error: 'URL is required' });
@@ -150,7 +170,8 @@ app.post('/api/analyze', async (req, res) => {
             timeout: parseInt(timeout) || 15000,
             sameDomain: sameDomain !== false,
             smartDiscovery: smartDiscovery !== false, // Default to true
-            headless: true
+            headless: true,
+            cookies: cookies || []
         };
         // ... (rest of endpoint)
 
@@ -200,7 +221,7 @@ app.post('/api/archive-selected', async (req, res) => {
         return res.status(400).json({ error: 'Operation already in progress' });
     }
 
-    const { urls, delay, timeout } = req.body;
+    const { urls, delay, timeout, cookies } = req.body;
 
     if (!urls || !Array.isArray(urls) || urls.length === 0) {
         return res.status(400).json({ error: 'URLs array is required' });
@@ -221,7 +242,8 @@ app.post('/api/archive-selected', async (req, res) => {
             outputPath: outputPath,
             delay: parseInt(delay) || 500,
             timeout: parseInt(timeout) || 30000,
-            headless: true
+            headless: true,
+            cookies: cookies || []
         };
 
         currentArchiver = new Archiver(config);
@@ -281,12 +303,18 @@ io.on('connection', (socket) => {
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`
-╔═══════════════════════════════════════╗
-║     🔄 ReCURSE Website Archiver       ║
-╚═══════════════════════════════════════╝
+${chalk.hex('#8b5cf6')('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')}
+${chalk.hex('#22d3ee').bold('  ██████╗ ███████╗')}${chalk.white('/')}${chalk.hex('#a78bfa').bold('██████╗██╗   ██╗██████╗ ███████╗███████╗')}
+${chalk.hex('#22d3ee').bold('  ██╔══██╗██╔════╝')}${chalk.white(' ')}${chalk.hex('#a78bfa').bold('██╔════╝██║   ██║██╔══██╗██╔════╝██╔════╝')}
+${chalk.hex('#22d3ee').bold('  ██████╔╝█████╗  ')}${chalk.white(' ')}${chalk.hex('#a78bfa').bold('██║     ██║   ██║██████╔╝███████╗█████╗  ')}
+${chalk.hex('#22d3ee').bold('  ██╔══██╗██╔══╝  ')}${chalk.white(' ')}${chalk.hex('#a78bfa').bold('██║     ██║   ██║██╔══██╗╚════██║██╔══╝  ')}
+${chalk.hex('#22d3ee').bold('  ██║  ██║███████╗')}${chalk.white(' ')}${chalk.hex('#a78bfa').bold('╚██████╗╚██████╔╝██║  ██║███████║███████╗')}
+${chalk.hex('#22d3ee').bold('  ╚═╝  ╚═╝╚══════╝')}${chalk.white(' ')}${chalk.hex('#a78bfa').bold(' ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝')}
+${chalk.hex('#64748b')('                    Website Archiver')}
+${chalk.hex('#8b5cf6')('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')}
 
-  Server running at: http://localhost:${PORT}
+  ${chalk.hex('#94a3b8')('✨ Server running at:')} ${chalk.hex('#22d3ee').bold.underline(`http://localhost:${PORT}`)}
   
-  Open this URL in your browser to use the GUI!
+  ${chalk.hex('#64748b')('Open this URL in your browser to use the GUI!')}
 `);
 });

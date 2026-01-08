@@ -1,5 +1,5 @@
 /**
- * ReCURSE - Storage Manager
+ * Re/curse - Storage Manager
  * IndexedDB wrapper for pages, assets, and crawl metadata
  */
 

@@ -1,0 +1,14 @@
+[
+    {
+        "name": "test_session",
+        "value": "abc123xyz",
+        "domain": ".example.com",
+        "path": "/"
+    },
+    {
+        "name": "user_pref",
+        "value": "dark_mode",
+        "domain": ".example.com",
+        "path": "/"
+    }
+]

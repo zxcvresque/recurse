@@ -1,58 +1,27 @@
-# ReCURSE - Website Archiver
+<p align="center">
+  <img src="data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 50 L90 30 L90 70 L50 90 Z' fill='%230d9488'/%3E%3Cpath d='M50 50 L10 30 L10 70 L50 90 Z' fill='%2314b8a6'/%3E%3Cpath d='M50 50 L10 30 L50 10 L90 30 Z' fill='%235eead4'/%3E%3Cpath d='M50 40 L60 35 M50 40 L40 35 M50 40 L50 52' stroke='%23fff' stroke-width='3' stroke-linecap='round' fill='none'/%3E%3C/svg%3E" width="80" height="80" alt="Re/curse Logo">
+</p>
 
-A powerful Playwright-based website archiver with both CLI and Web GUI interfaces. Archive entire websites for offline use with smart discovery, real-time progress tracking, and selective page archiving.
+<h1 align="center">Re/curse</h1>
+<p align="center"><strong>Website Archiver</strong></p>
+<p align="center">Archive entire websites for offline use with a modern GUI or CLI</p>
 
----
-
-## 🚀 Quick Start
-
-### Web GUI (Recommended)
-```bash
-npm install
-npm start
-# Open http://localhost:3000 in your browser
-```
-
-### CLI
-```bash
-npm install
-node src/cli.js https://example.com
-```
 
 ---
 
 ## ✨ Features
 
-### Core Capabilities
-- **🔄 Recursive Crawling** - Configurable depth-based website traversal
-- **🧠 Smart Discovery** - Automatic sitemap.xml and robots.txt parsing for efficient page discovery
-- **📦 Asset Management** - Download and organize images, CSS, JavaScript, fonts, videos, and audio
-- **🔗 Link Rewriting** - Automatic conversion of URLs to local paths for offline navigation
-- **📊 Real-time Progress** - Live statistics and progress tracking via Socket.IO
-- **💾 Flexible Export** - Output to folder structure or compressed ZIP archive
-- **🎯 Selective Archiving** - Analyze first, then choose specific pages to archive
-- **⚡ Rate Limiting** - Configurable delays to respect server resources
-- **🖼️ Inline CSS** - Captures computed styles for pixel-perfect offline rendering
-- **📸 Data URL Conversion** - Small images embedded as data URLs for faster loading
-
-### Interface Options
-
-#### 1. **Web GUI** (Feature-Rich)
-- Modern, responsive interface with real-time updates
-- Three-mode workflow:
-  - **Quick Archive** - Direct archiving with customizable options
-  - **Analyze Mode** - Discover pages without downloading (preview site structure)
-  - **Selective Archive** - Choose specific pages from analysis results
-- Visual progress tracking with live stats
-- Hierarchical page tree view
-- Size estimation before archiving
-- Archive history management
-
-#### 2. **CLI** (Automation-Friendly)
-- Scriptable command-line interface
-- Colored terminal output with progress spinners
-- Ideal for automation and batch processing
-- Detailed result statistics
+| Feature | Description |
+|---------|-------------|
+| 🔄 **Recursive Crawling** | Configurable depth-based website traversal |
+| 🧠 **Smart Discovery** | Automatic sitemap.xml and robots.txt parsing |
+| 📦 **Asset Management** | Download images, CSS, JS, fonts, videos, audio |
+| 🔗 **Link Rewriting** | Converts URLs to local paths for offline navigation |
+| 🍪 **Cookie Import** | Paste exported cookies JSON to access login-protected pages |
+| 🔐 **Interactive Login** | Manual login via visible browser (Brave/Chrome/Chromium) |
+| 📊 **Real-time Progress** | Live statistics via Socket.IO |
+| 💾 **Flexible Export** | Output to folder or ZIP archive |
+| ⚡ **Fast Compression** | Optimized ZIP with low compression for speed |
 
 ---
 
@@ -60,256 +29,136 @@ node src/cli.js https://example.com
 
 ### Prerequisites
 - **Node.js** 18 or higher
-- **npm** (comes with Node.js)
+- **npm** (included with Node.js)
 
-### Setup
+### Quick Start
+
 ```bash
-# Clone or download the repository
-cd ReCURSE
+# Clone repository
+git clone https://github.com/zxcvresque/recurse.git
+cd recurse
 
-# Install dependencies (includes Playwright browser)
+# Install dependencies
 npm install
 
-# Playwright will automatically download Chromium (~170MB)
+# Start the GUI
+npm start
 ```
+
+Then open **http://localhost:3000** in your browser.
 
 ---
 
-## 🎮 Usage
+## 🚀 Usage
 
-### Web GUI
+### Web GUI (Recommended)
 
 ```bash
-# Start the server
 npm start
-
-# Or alternatively
-npm run gui
 ```
 
-Then open `http://localhost:3000` in your browser.
-
-**Quick Archive Mode:**
-1. Enter website URL
-2. Configure options (depth, page limit, asset types)
-3. Click "Start Archive"
-4. Download completed archive from history
-
-**Analyze & Select Mode:**
-1. Enter website URL
-2. Click "Analyze Site"
-3. Browse discovered pages in tree view
-4. Select specific pages to archive
-5. Click "Archive Selected"
+**Workflow:**
+1. Enter the website URL
+2. Choose **Quick Archive** or **Analyze First**
+3. Configure depth, page limits, and asset options
+4. Click **Start Archiving**
+5. Download the archive from history
 
 ### CLI
 
 ```bash
-# Basic usage
 node src/cli.js <url> [options]
-
-# Examples
-node src/cli.js https://example.com
-node src/cli.js https://blog.example.com -d 3 -p 100 -o myblog.zip
-node src/cli.js https://docs.example.com --depth 2 --no-js --visible
 ```
 
-#### CLI Options
+**Examples:**
+```bash
+# Basic archive
+node src/cli.js https://example.com
+
+# Custom depth and output
+node src/cli.js https://docs.example.com -d 5 -p 200 -o docs.zip
+
+# With cookies for authenticated pages
+node src/cli.js https://private.site.com --cookies cookies.json
+
+# Skip JavaScript, show browser
+node src/cli.js https://blog.example.com --no-js --visible
+```
+
+### CLI Options
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `-d, --depth <n>` | 3 | Maximum crawl depth (0 = single page) |
+| `-d, --depth <n>` | 3 | Maximum crawl depth |
 | `-p, --pages <n>` | 50 | Maximum pages to download |
-| `-o, --output <path>` | ./archive | Output path (folder or .zip file) |
-| `--delay <ms>` | 500 | Delay between page requests (ms) |
-| `--timeout <ms>` | 30000 | Page load timeout (ms) |
-| `--no-images` | false | Skip downloading images |
-| `--no-css` | false | Skip downloading CSS files |
-| `--no-js` | false | Skip downloading JavaScript |
-| `--visible` | false | Show browser window (not headless) |
+| `-o, --output <path>` | ./archive | Output folder or .zip file |
+| `-c, --cookies <file>` | - | Path to cookies JSON file |
+| `--delay <ms>` | 500 | Delay between requests |
+| `--timeout <ms>` | 30000 | Page load timeout |
+| `--no-images` | - | Skip downloading images |
+| `--no-css` | - | Skip downloading CSS |
+| `--no-js` | - | Skip downloading JavaScript |
+| `--visible` | - | Show browser window |
+
+---
+
+## 🔐 Authentication
+
+### Method 1: Cookie Import (Headless)
+
+1. Install a browser extension like **EditThisCookie**
+2. Log into the target website
+3. Export cookies as JSON
+4. **CLI:** `node src/cli.js https://site.com --cookies cookies.json`
+5. **GUI:** Paste JSON into "Import Cookies" in Advanced Options
+
+### Method 2: Interactive Login (Visual)
+
+1. Enable **Interactive Login** in Advanced Options
+2. Select browser profile (Default/Chrome/Brave)
+3. A visible browser window opens at the target URL
+4. Log in manually (handle MFA, CAPTCHA, etc.)
+5. Click **"I've Logged In"** in Re/curse to continue
 
 ---
 
 ## 📂 Output Structure
 
-### Folder Export
 ```
 archive/
-├── index.html              # Auto-redirect to main page
-├── pages/                  # All archived HTML pages
+├── index.html          # Auto-redirect to main page
+├── pages/              # All archived HTML pages
 │   ├── index.html
 │   ├── about.html
-│   ├── blog/
-│   │   ├── post-1.html
-│   │   └── post-2.html
-│   └── docs/
-│       └── guide.html
+│   └── blog/
+│       └── post-1.html
 └── assets/
-    ├── images/             # Image files
-    ├── css/                # Stylesheets
-    └── js/                 # JavaScript files
-```
-
-### ZIP Export
-Same structure, compressed into a single `.zip` file for easy distribution.
-
----
-
-## 🏆 Advantages
-
-### vs HTTrack
-- **Modern Browser Engine** - Uses Chromium via Playwright for accurate JavaScript rendering
-- **Smart Discovery** - Automatic sitemap parsing for faster, more complete crawling
-- **Selective Archiving** - Analyze first, then choose what to download
-- **Real-time Feedback** - Live progress tracking in both CLI and GUI
-- **Modern Stack** - Node.js/JavaScript ecosystem, easy to extend
-- **Inline CSS Capture** - Captures computed styles for better offline fidelity
-- **Web GUI** - User-friendly interface with visual page tree
-
-### vs wget
-- **JavaScript Support** - Full browser rendering, not just static HTML
-- **Asset Organization** - Structured folder hierarchy instead of flat files
-- **Link Rewriting** - Intelligent URL conversion for offline navigation
-- **Progress Tracking** - Real-time stats and visual feedback
-- **Selective Mode** - Preview and choose pages before downloading
-
-### vs Browser Extensions
-- **No Page Limits** - Archive thousands of pages automatically
-- **Recursive Crawling** - Follow links across entire site structure
-- **Automation Ready** - CLI interface for scripting and batch jobs
-- **Server Deployment** - Run as a service for team access
-- **Better Asset Handling** - Organized, deduplicated asset storage
-
-### General Advantages
-- **Cross-platform** - Works on Windows, macOS, Linux
-- **Open Source** - MIT licensed, fully customizable
-- **No Installation** - Just Node.js required, no complex setup
-- **Lightweight** - Small codebase, minimal dependencies
-- **Rate Limiting** - Built-in politeness to avoid server overload
-- **URL Normalization** - Removes tracking parameters, deduplicates pages
-
----
-
-## ⚠️ Limitations
-
-### Technical Constraints
-- **Same-Origin Policy** - Only crawls pages from the same domain by default
-- **No Authentication** - Cannot bypass login pages or access protected content
-- **JavaScript Execution** - May not capture dynamically loaded content that requires user interaction
-- **External Resources** - Links to external domains remain as internet URLs
-- **Binary Files** - Large files (videos, ISOs) are detected but not archived by default
-
-### Performance Considerations
-- **Large Sites** - Archiving thousands of pages can take significant time
-- **Memory Usage** - Browser instances consume RAM (typically 200-500MB per session)
-- **Storage** - Archives can be large depending on asset types included
-- **Network** - Requires stable internet connection during archiving
-
-### Content Limitations
-- **Dynamic Content** - Infinite scroll, lazy loading may not be fully captured
-- **Single Page Apps** - React/Vue apps with client-side routing may need special handling
-- **Embedded Media** - YouTube videos, external widgets remain as external links
-- **Forms & Interactivity** - Archived pages are static, forms won't submit
-- **Relative Timestamps** - "Posted 2 hours ago" will show original timestamp
-
-### Legal & Ethical
-- **Copyright** - Respect website terms of service and copyright laws
-- **Rate Limiting** - Default 500ms delay may still be too fast for some servers
-- **Robots.txt** - Smart discovery respects sitemaps but doesn't enforce robots.txt crawl-delay
-- **Server Load** - Aggressive crawling can impact server performance
-
----
-
-## 🛠️ Advanced Configuration
-
-### Environment Variables
-```bash
-PORT=3000  # Web server port (default: 3000)
-```
-
-### Programmatic Usage
-```javascript
-import { Archiver } from './src/archiver.js';
-
-const archiver = new Archiver({
-    startUrl: 'https://example.com',
-    maxDepth: 3,
-    maxPages: 100,
-    outputPath: './my-archive.zip',
-    includeAssets: {
-        images: true,
-        css: true,
-        js: true
-    },
-    delay: 500,
-    timeout: 30000,
-    headless: true,
-    smartDiscovery: true
-});
-
-archiver.on('page', (data) => {
-    console.log(`Downloaded: ${data.url}`);
-});
-
-const result = await archiver.run();
-console.log(`Archived ${result.pages} pages`);
+    ├── images/         # Image files
+    ├── css/            # Stylesheets
+    └── js/             # JavaScript files
 ```
 
 ---
 
-## 📊 How It Works
+## 🔧 Advanced Options
 
-### Crawling Process
-1. **Initialization** - Launch headless Chromium browser
-2. **Smart Discovery** (if enabled) - Parse robots.txt and sitemap.xml
-3. **Queue Management** - Add starting URL and discovered URLs to queue
-4. **Page Capture** - Navigate to each page, wait for DOM load
-5. **Content Extraction** - Capture HTML, inline CSS, extract links
-6. **Asset Download** - Fetch images, stylesheets, scripts
-7. **Link Rewriting** - Convert absolute URLs to relative local paths
-8. **Export** - Write to folder structure or ZIP archive
+### Asset Selection
+Choose which assets to include:
+- ✅ Images (PNG, JPG, GIF, SVG)
+- ✅ Stylesheets (CSS)
+- ✅ JavaScript (JS)
+- ✅ Fonts (WOFF, TTF, OTF)
+- ✅ Videos (MP4, WEBM)
+- ✅ Audio (MP3, WAV, OGG)
 
 ### Smart Discovery
-- Checks `/robots.txt` for sitemap declarations
-- Falls back to `/sitemap.xml` if not found
-- Recursively processes sitemap indices
-- Extracts all URLs before crawling begins
-- Significantly faster for large, well-structured sites
-
-### URL Normalization
-- Removes tracking parameters (utm_*, fbclid, ref)
-- Strips URL fragments (#anchors)
-- Removes trailing slashes for consistency
-- Deduplicates pages with different query strings
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Areas for improvement:
-- Authentication support (session cookies, OAuth)
-- Better SPA handling (wait for client-side routing)
-- Incremental archiving (update existing archives)
-- Compression options (quality settings)
-- Custom crawl rules (CSS selectors, XPath)
+Automatically finds pages via:
+- `robots.txt` sitemap references
+- `sitemap.xml` parsing
+- Recursive link extraction
 
 ---
 
 ## 📄 License
 
-MIT License - See LICENSE file for details
-
----
-
-## 🔗 Related Projects
-
-- [Playwright](https://playwright.dev/) - Browser automation framework
-- [HTTrack](https://www.httrack.com/) - Classic website copier
-- [ArchiveBox](https://archivebox.io/) - Self-hosted internet archiving
-- [SingleFile](https://github.com/gildas-lormeau/SingleFile) - Browser extension for single-page archiving
-
----
-
-## 📞 Support
-
-For issues, questions, or feature requests, please open an issue on the project repository.
+MIT License - See LICENSE file for details.

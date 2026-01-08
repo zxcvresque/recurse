@@ -1,0 +1,55 @@
+<html lang="en"><head><style id="recurse-inline-css">
+                [data-recurse-dynamic] {
+                    position: relative;
+                    cursor: pointer;
+                    max-height: 500px !important;
+                    overflow: hidden !important;
+                }
+                [data-recurse-dynamic] > * {
+                    max-height: 500px !important;
+                    overflow: hidden !important;
+                }
+                [data-recurse-dynamic]::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: transparent;
+                    z-index: 10;
+                    transition: background 0.2s;
+                }
+                [data-recurse-dynamic]:hover::before {
+                    background: rgba(99, 102, 241, 0.05);
+                }
+                [data-recurse-dynamic]::after {
+                    content: '⚡ Dynamic content - Click to view online';
+                    position: absolute;
+                    bottom: 8px;
+                    right: 8px;
+                    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+                    color: #fff;
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    font-size: 11px;
+                    font-weight: 500;
+                    font-family: system-ui, -apple-system, sans-serif;
+                    opacity: 0;
+                    transform: translateY(4px);
+                    transition: opacity 0.2s, transform 0.2s;
+                    pointer-events: none;
+                    z-index: 20;
+                    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+                }
+                [data-recurse-dynamic]:hover::after {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            
+body { background: rgb(238, 238, 238); width: 60vw; margin: 15vh auto; font-family: system-ui, sans-serif; }
+h1 { font-size: 1.5em; }
+div { opacity: 0.8; }
+a:link, a:visited { color: rgb(51, 68, 136); }
+</style><title>Example Domain</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href="https://iana.org/domains/example">Learn more</a></p></div>
+</body></html>

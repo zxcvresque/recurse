@@ -1,28 +1,38 @@
 #!/usr/bin/env node
 /**
- * ReCURSE - CLI Interface
+ * Re/curse - CLI Interface
  * Website archiver using Playwright
  */
 
 import { program } from 'commander';
 import chalk from 'chalk';
 import ora from 'ora';
+import * as fs from 'fs/promises';
 import { Archiver } from './archiver.js';
+// ASCII art banner with line separators
+const banner = `
+${chalk.hex('#8b5cf6')('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')}
+${chalk.hex('#22d3ee').bold('  ██████╗ ███████╗')}${chalk.white('/')}${chalk.hex('#a78bfa').bold('██████╗██╗   ██╗██████╗ ███████╗███████╗')}
+${chalk.hex('#22d3ee').bold('  ██╔══██╗██╔════╝')}${chalk.white(' ')}${chalk.hex('#a78bfa').bold('██╔════╝██║   ██║██╔══██╗██╔════╝██╔════╝')}
+${chalk.hex('#22d3ee').bold('  ██████╔╝█████╗  ')}${chalk.white(' ')}${chalk.hex('#a78bfa').bold('██║     ██║   ██║██████╔╝███████╗█████╗  ')}
+${chalk.hex('#22d3ee').bold('  ██╔══██╗██╔══╝  ')}${chalk.white(' ')}${chalk.hex('#a78bfa').bold('██║     ██║   ██║██╔══██╗╚════██║██╔══╝  ')}
+${chalk.hex('#22d3ee').bold('  ██║  ██║███████╗')}${chalk.white(' ')}${chalk.hex('#a78bfa').bold('╚██████╗╚██████╔╝██║  ██║███████║███████╗')}
+${chalk.hex('#22d3ee').bold('  ╚═╝  ╚═╝╚══════╝')}${chalk.white(' ')}${chalk.hex('#a78bfa').bold(' ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝')}
+${chalk.hex('#64748b')('                    Website Archiver')}
+${chalk.hex('#8b5cf6')('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')}
+`;
 
-console.log(chalk.bold.magenta(`
-╔═══════════════════════════════════════╗
-║     🔄 ReCURSE Website Archiver       ║
-╚═══════════════════════════════════════╝
-`));
+console.log(banner);
 
 program
-    .name('recurse')
+    .name('Re/curse')
     .description('Recursively crawl and archive websites for offline use')
     .version('1.0.0')
     .argument('<url>', 'Starting URL to archive')
     .option('-d, --depth <number>', 'Maximum crawl depth', '3')
     .option('-p, --pages <number>', 'Maximum pages to download', '50')
     .option('-o, --output <path>', 'Output directory or ZIP file', './archive')
+    .option('-c, --cookies <file>', 'Path to cookies JSON file (exported from browser)')
     .option('--no-images', 'Skip downloading images')
     .option('--no-css', 'Skip downloading CSS')
     .option('--no-js', 'Skip downloading JavaScript')
@@ -34,6 +44,18 @@ program
         const spinner = ora('Initializing...').start();
 
         try {
+            // Load cookies from file if provided
+            let cookies = [];
+            if (options.cookies) {
+                try {
+                    const cookieData = await fs.readFile(options.cookies, 'utf-8');
+                    cookies = JSON.parse(cookieData);
+                    spinner.text = chalk.hex('#a78bfa')(`Loaded ${cookies.length} cookies from ${options.cookies}`);
+                } catch (e) {
+                    spinner.warn(chalk.hex('#fbbf24')(`Failed to load cookies: ${e.message}`));
+                }
+            }
+
             const config = {
                 startUrl: url,
                 maxDepth: parseInt(options.depth),
@@ -46,7 +68,8 @@ program
                 },
                 delay: parseInt(options.delay),
                 timeout: parseInt(options.timeout),
-                headless: !options.visible
+                headless: !options.visible,
+                cookies: cookies
             };
 
             spinner.text = `Starting crawl of ${chalk.cyan(url)}`;

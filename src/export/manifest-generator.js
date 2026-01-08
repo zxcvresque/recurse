@@ -1,5 +1,5 @@
 /**
- * ReCURSE - Manifest Generator
+ * Re/curse - Manifest Generator
  * Generates JSON manifest and sitemap for archive
  */
 
@@ -26,7 +26,7 @@ export function generateManifest(crawl, pages, assets) {
 
     return {
         version: '1.0.0',
-        generator: 'ReCURSE Website Archiver',
+        generator: 'Re/curse Website Archiver',
         format: 'recurse-archive-v1',
         createdAt: new Date().toISOString(),
 

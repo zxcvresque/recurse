@@ -1,5 +1,5 @@
 /**
- * ReCURSE Web GUI - Enhanced with Analyze Mode
+ * Re/curse Web GUI - Enhanced with Analyze Mode
  */
 
 const socket = io();
@@ -61,7 +61,15 @@ const elements = {
     finalSize: document.getElementById('final-size'),
     finalDuration: document.getElementById('final-duration'),
     outputPath: document.getElementById('output-path'),
-    newCrawl: document.getElementById('new-crawl')
+    newCrawl: document.getElementById('new-crawl'),
+
+    // Interactive Login
+    interactiveLogin: document.getElementById('interactive-login'),
+    browserSelection: document.getElementById('browser-selection'),
+    browserType: document.getElementById('browser-type'),
+    loginOverlay: document.getElementById('login-overlay'),
+    confirmLoginBtn: document.getElementById('confirm-login-btn'),
+    cancelLoginBtn: document.getElementById('cancel-login-btn')
 };
 
 // State
@@ -80,6 +88,14 @@ elements.infiniteDepth?.addEventListener('change', () => {
 
 elements.infinitePages?.addEventListener('change', () => {
     elements.maxPages.disabled = elements.infinitePages.checked;
+});
+
+elements.interactiveLogin.addEventListener('change', () => {
+    if (elements.interactiveLogin.checked) {
+        elements.browserSelection.classList.remove('hidden');
+    } else {
+        elements.browserSelection.classList.add('hidden');
+    }
 });
 
 // Number input buttons with hold-to-increment
@@ -153,6 +169,10 @@ socket.on('analyzing', (data) => {
     }
 });
 
+socket.on('waiting-for-login', (data) => {
+    elements.loginOverlay.classList.remove('hidden');
+});
+
 socket.on('analyze-complete', (data) => {
     discoveredPages = data.pages;
     pageTree = data.tree;
@@ -198,7 +218,34 @@ socket.on('failed', (data) => {
     showView('start');
 });
 
-socket.on('stopped', () => showView('start'));
+socket.on('stopped', () => {
+    showView('start');
+    elements.loginOverlay.classList.add('hidden');
+});
+
+// Interactive Login Actions
+elements.confirmLoginBtn.addEventListener('click', async () => {
+    elements.confirmLoginBtn.disabled = true;
+    elements.confirmLoginBtn.textContent = 'Confirming...';
+    try {
+        const response = await fetch('/api/login-confirm', { method: 'POST' });
+        const result = await response.json();
+        if (result.success) {
+            elements.loginOverlay.classList.add('hidden');
+        } else {
+            alert(result.error);
+        }
+    } catch (e) {
+        alert('Failed to confirm login');
+    } finally {
+        elements.confirmLoginBtn.disabled = false;
+        elements.confirmLoginBtn.textContent = '⚡ I\'ve Logged In, Start Archiving';
+    }
+});
+
+elements.cancelLoginBtn.addEventListener('click', () => {
+    stopCrawl();
+});
 
 // Functions
 function normalizeUrl(url) {
@@ -215,6 +262,20 @@ async function handleStart() {
     try { new URL(url); } catch { alert('Please enter a valid URL'); return; }
 
     const mode = document.querySelector('input[name="mode"]:checked')?.value || 'quick';
+
+    // Parse cookies from textarea
+    let cookies = [];
+    const cookiesInput = document.getElementById('cookies-input')?.value?.trim();
+    if (cookiesInput) {
+        try {
+            cookies = JSON.parse(cookiesInput);
+            if (!Array.isArray(cookies)) cookies = [cookies];
+        } catch (e) {
+            alert('Invalid cookies JSON format. Please paste valid JSON array.');
+            return;
+        }
+    }
+
     const options = {
         url,
         depth: elements.infiniteDepth?.checked ? 999999 : parseInt(elements.maxDepth.value),
@@ -223,7 +284,16 @@ async function handleStart() {
         timeout: parseInt(elements.timeout?.value) || 30000,
         sameDomain: elements.sameDomain?.checked !== false,
         smartDiscovery: document.getElementById('smart-discovery')?.checked !== false,
-        outputDir: document.getElementById('output-dir')?.value || './archives'
+        outputDir: document.getElementById('output-dir')?.value || './archives',
+        interactiveLogin: elements.interactiveLogin.checked,
+        browserType: elements.browserType.value,
+        cookies: cookies,
+        includeImages: document.getElementById('include-images')?.checked !== false,
+        includeCss: document.getElementById('include-css')?.checked !== false,
+        includeJs: document.getElementById('include-js')?.checked !== false,
+        includeFonts: document.getElementById('include-fonts')?.checked !== false,
+        includeVideo: document.getElementById('include-video')?.checked !== false,
+        includeAudio: document.getElementById('include-audio')?.checked !== false
     };
 
     if (mode === 'analyze') {
@@ -280,10 +350,23 @@ async function downloadSelected() {
         return;
     }
 
+    // Parse cookies from textarea
+    let cookies = [];
+    const cookiesInput = document.getElementById('cookies-input')?.value?.trim();
+    if (cookiesInput) {
+        try {
+            cookies = JSON.parse(cookiesInput);
+            if (!Array.isArray(cookies)) cookies = [cookies];
+        } catch (e) {
+            alert('Invalid cookies JSON format. Please paste valid JSON array.');
+            return;
+        }
+    }
+
     const response = await fetch('/api/archive-selected', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ urls: selectedUrls })
+        body: JSON.stringify({ urls: selectedUrls, cookies: cookies })
     });
     const result = await response.json();
     if (result.success) {

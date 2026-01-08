@@ -4,6 +4,21 @@
     box-sizing: border-box;
 }
 
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+}
+
+@font-face {
+    font-family: 'Departure Mono';
+    src: url('DepartureMono-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 @font-face {
     font-family: 'DR Krapka Rhombus';
     src: url('DRKrapkaRhombus-Medium.ttf') format('truetype');
@@ -23,12 +38,19 @@
     --border: rgba(20, 83, 45, 0.5);
     --card-radius: 12px;
     --btn-radius: 6px;
-    --font-mono: 'Fira Code', monospace;
+    --font-mono: 'Departure Mono', monospace;
 }
 
 body {
-    font-family: 'Fira Code', monospace, system-ui, -apple-system, sans-serif;
+    font-family: 'Departure Mono', monospace, system-ui, -apple-system, sans-serif;
     background-color: var(--bg-primary);
+    background-image:
+        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+        radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+        radial-gradient(circle at 10% 60%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        radial-gradient(circle at 90% 40%, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 60px 60px, 50px 50px, 80px 80px, 70px 70px, 55px 55px;
     color: var(--text-primary);
     min-height: 100vh;
     display: flex;
@@ -1160,4 +1182,79 @@ body.layout-terminal::after {
 .panel .btn-danger,
 .panel .btn-primary {
     margin-top: 16px;
+}
+
+/* Overlay System */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    transition: opacity 0.3s;
+}
+
+.overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+    display: none;
+}
+
+.overlay-content {
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    border: 1px solid var(--accent-primary);
+    box-shadow: 0 0 30px rgba(74, 222, 128, 0.2);
+}
+
+.overlay-header {
+    margin-bottom: 20px;
+}
+
+.overlay-actions {
+    margin-top: 24px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.overlay-content h3 {
+    font-size: 20px;
+    margin: 15px 0 10px;
+    color: var(--accent-primary);
+}
+
+.overlay-content p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+select {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-primary);
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    outline: none;
+}
+
+select:focus {
+    border-color: var(--accent-primary);
+}
+
+option {
+    background: #0a0a0a;
+    color: var(--text-primary);
 }
