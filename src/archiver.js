@@ -46,11 +46,21 @@ export class Archiver extends EventEmitter {
         this.pages = [];
         this.assets = new Map();
         this.stats = { pages: 0, assets: 0, totalBytes: 0, errors: 0 };
+        this.stopped = false; // Stop flag for graceful halt
 
         try {
             this.origin = new URL(this.startUrl).origin;
         } catch (e) {
             throw new Error(`Invalid URL: ${this.startUrl}`);
+        }
+    }
+
+    // Stop archiving gracefully
+    stop() {
+        this.stopped = true;
+        this.emit('stopped', {});
+        if (this.browser) {
+            this.browser.close().catch(() => { });
         }
     }
 
@@ -287,10 +297,6 @@ export class Archiver extends EventEmitter {
         }
     }
 
-    stop() {
-        this.stopped = true;
-    }
-
     // Build hierarchical tree from flat page list
     buildPageTree(pages) {
         const tree = { name: '/', path: '/', children: {}, pages: [], count: 0, selected: true };
@@ -382,7 +388,7 @@ export class Archiver extends EventEmitter {
     }
 
     async processQueue() {
-        while (this.queue.length > 0 && this.stats.pages < this.maxPages) {
+        while (this.queue.length > 0 && this.stats.pages < this.maxPages && !this.stopped) {
             const { url, depth } = this.queue.shift();
 
             const normalized = this.normalizeUrl(url);
@@ -406,6 +412,7 @@ export class Archiver extends EventEmitter {
                 }
             } catch (error) {
                 this.stats.errors++;
+                this.failures.push({ url, depth, message: error.message });
                 this.emit('error', { url, message: error.message });
             }
         }
@@ -713,17 +720,151 @@ export class Archiver extends EventEmitter {
             zip.file('index.html', indexHtml);
         }
 
+        // Generate URL reports
+        const urlReport = this.generateUrlReport();
+        zip.file('urls.json', JSON.stringify(urlReport, null, 2));
+        zip.file('urls.csv', this.generateUrlCsv(urlReport));
+        zip.file('urls.txt', this.generateUrlTxt(urlReport));
+        zip.file('sitemap.html', this.generateSitemapHtml(urlReport));
+
         // Generate ZIP with optimized compression (faster)
         const buffer = await zip.generateAsync({
             type: 'nodebuffer',
             compression: 'DEFLATE',
-            compressionOptions: { level: 1 } // Faster compression (1-9, lower = faster)
+            compressionOptions: { level: 1 }
         });
-        // Create parent directory if needed
         await fs.mkdir(path.dirname(this.outputPath), { recursive: true });
         await fs.writeFile(this.outputPath, buffer);
 
         return this.outputPath;
+    }
+
+    generateUrlReport() {
+        const successful = this.pages.map(p => ({
+            url: p.url,
+            title: p.title || '',
+            status: 'success',
+            depth: p.depth ?? 0
+        }));
+
+        const failed = this.failures.map(f => ({
+            url: f.url,
+            title: '',
+            status: 'failed',
+            reason: f.message,
+            depth: f.depth ?? 0
+        }));
+
+        return {
+            summary: {
+                total: successful.length + failed.length,
+                successful: successful.length,
+                failed: failed.length,
+                timestamp: new Date().toISOString()
+            },
+            successful,
+            failed
+        };
+    }
+
+    generateUrlCsv(report) {
+        const lines = ['url,status,title,reason,depth'];
+        for (const p of report.successful) {
+            lines.push(`"${p.url}","success","${p.title.replace(/"/g, '""')}","",${p.depth}`);
+        }
+        for (const f of report.failed) {
+            lines.push(`"${f.url}","failed","","${(f.reason || '').replace(/"/g, '""')}",${f.depth}`);
+        }
+        return lines.join('\n');
+    }
+
+    generateUrlTxt(report) {
+        let txt = `Re/curse URL Report\n`;
+        txt += `Generated: ${report.summary.timestamp}\n`;
+        txt += `Total: ${report.summary.total} | Success: ${report.summary.successful} | Failed: ${report.summary.failed}\n`;
+        txt += `${'='.repeat(60)}\n\n`;
+
+        txt += `SUCCESSFUL (${report.summary.successful})\n`;
+        txt += `${'-'.repeat(40)}\n`;
+        for (const p of report.successful) {
+            txt += `[OK] ${p.url}\n`;
+        }
+
+        if (report.failed.length > 0) {
+            txt += `\nFAILED (${report.summary.failed})\n`;
+            txt += `${'-'.repeat(40)}\n`;
+            for (const f of report.failed) {
+                txt += `[FAIL] ${f.url} - ${f.reason || 'Unknown error'}\n`;
+            }
+        }
+
+        return txt;
+    }
+
+    generateSitemapHtml(report) {
+        // Build tree from URLs
+        const tree = {};
+        for (const p of report.successful) {
+            try {
+                const u = new URL(p.url);
+                const parts = u.pathname.split('/').filter(Boolean);
+                let node = tree;
+                for (const part of parts) {
+                    if (!node[part]) node[part] = { _pages: [] };
+                    node = node[part];
+                }
+                node._pages.push({ url: p.url, title: p.title, status: 'ok' });
+            } catch (e) { }
+        }
+        for (const f of report.failed) {
+            try {
+                const u = new URL(f.url);
+                const parts = u.pathname.split('/').filter(Boolean);
+                let node = tree;
+                for (const part of parts) {
+                    if (!node[part]) node[part] = { _pages: [] };
+                    node = node[part];
+                }
+                node._pages.push({ url: f.url, title: '', status: 'fail', reason: f.reason });
+            } catch (e) { }
+        }
+
+        const renderTree = (node, indent = 0) => {
+            let html = '';
+            for (const [key, val] of Object.entries(node)) {
+                if (key === '_pages') continue;
+                const hasChildren = Object.keys(val).filter(k => k !== '_pages').length > 0;
+                const pages = val._pages || [];
+                html += `<div class="folder" style="margin-left:${indent * 16}px">
+                    <span class="toggle" onclick="this.parentElement.classList.toggle('open')">▶</span>
+                    <span class="name">/${key}</span>
+                    ${pages.map(p => `<a href="${p.status === 'ok' ? 'pages/' + this.urlToPath(p.url) : '#'}" class="${p.status}" title="${p.title || p.reason || ''}">${p.status === 'ok' ? '✓' : '✗'}</a>`).join('')}
+                </div>`;
+                html += `<div class="children">${renderTree(val, indent + 1)}</div>`;
+            }
+            return html;
+        };
+
+        return `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Sitemap - Re/curse</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#0a0a0f;color:#e0e0e5;padding:30px;margin:0}
+h1{color:#4ade80;font-size:24px;margin-bottom:20px}
+.stats{color:#888;margin-bottom:24px}
+.folder{padding:6px 0;cursor:pointer}
+.folder .toggle{color:#666;margin-right:8px;font-size:12px;transition:transform .2s}
+.folder.open>.toggle{transform:rotate(90deg)}
+.folder .name{color:#60a5fa}
+.children{display:none;border-left:1px solid #333;margin-left:8px}
+.folder.open+.children{display:block}
+a{margin-left:8px;text-decoration:none;font-size:12px}
+a.ok{color:#4ade80}
+a.fail{color:#f87171}
+</style></head><body>
+<h1>📁 Sitemap</h1>
+<div class="stats">Total: ${report.summary.total} | Success: ${report.summary.successful} | Failed: ${report.summary.failed}</div>
+<div class="tree">${renderTree(tree)}</div>
+</body></html>`;
     }
 
     async exportAsFolder() {

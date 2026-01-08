@@ -20,6 +20,8 @@
 | 🔐 **Interactive Login** | Manual login via visible browser (Brave/Chrome/Chromium) |
 | 📊 **Real-time Progress** | Live statistics via Socket.IO |
 | 💾 **Flexible Export** | Output to folder or ZIP archive |
+| 📋 **URL Reports** | Export urls.json, urls.csv, urls.txt with success/fail status |
+| 🗺️ **Sitemap Viewer** | Interactive HTML tree view of all archived pages |
 
 ---
 
@@ -115,8 +117,12 @@ node src/cli.js https://private.site.com --cookies cookies.json
 ## 📂 Output Structure
 
 ```
-archive/
+archive.zip
 ├── index.html          # Auto-redirect to main page
+├── sitemap.html        # Interactive tree view of all pages
+├── urls.json           # Structured URL data (success/fail)
+├── urls.csv            # Spreadsheet format
+├── urls.txt            # Human-readable report
 ├── pages/              # All archived HTML pages
 │   ├── index.html
 │   └── blog/
